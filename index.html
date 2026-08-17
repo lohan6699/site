@@ -25,7 +25,6 @@
             margin: 0 auto;
         }
 
-        /* Cabeçalho */
         header {
             background: rgba(0, 0, 0, 0.35);
             padding: 18px 0;
@@ -64,7 +63,6 @@
             color: #a78bfa;
         }
 
-        /* Hero */
         .hero {
             text-align: center;
             padding: 70px 0 50px;
@@ -104,7 +102,6 @@
             box-shadow: 0 15px 30px rgba(124, 58, 237, 0.55);
         }
 
-        /* Título da seção */
         .section-title {
             text-align: center;
             font-size: 1.9rem;
@@ -112,7 +109,6 @@
             color: #e0e7ff;
         }
 
-        /* Grid de jogos */
         .games-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -173,13 +169,11 @@
             transform: scale(1.05);
         }
 
-        /* Destaque especial para o jogo do usuário */
         .destaque {
             border: 2px solid #a78bfa;
             background: rgba(167, 139, 250, 0.15);
         }
 
-        /* Rodapé */
         footer {
             background: rgba(0, 0, 0, 0.4);
             text-align: center;
@@ -189,7 +183,6 @@
             border-top: 1px solid rgba(255,255,255,0.08);
         }
 
-        /* Responsivo */
         @media (max-width: 700px) {
             .header-content {
                 flex-direction: column;
@@ -209,7 +202,6 @@
 </head>
 <body>
 
-    <!-- Cabeçalho -->
     <header>
         <div class="container header-content">
             <div class="logo">🎮 Portal de Jogos</div>
@@ -223,24 +215,30 @@
 
     <main class="container">
 
-        <!-- Hero -->
         <section class="hero">
             <h1>Entre nos Jogos Agora!</h1>
             <p>Escolha um jogo abaixo e divirta-se. Todos são grátis e rodam direto no navegador.</p>
             <a href="#jogos" class="btn-principal">Ver Jogos ↓</a>
         </section>
 
-        <!-- Lista de jogos -->
         <h2 class="section-title" id="jogos">Jogos Populares</h2>
 
         <div class="games-grid">
 
-            <!-- JOGO DO USUÁRIO (em destaque) -->
+            <!-- Super Jogo da Velha -->
             <div class="game-card destaque">
                 <span class="game-icon">❌⭕</span>
                 <h3>Super Jogo da Velha</h3>
                 <p>Ultimate Tic-Tac-Toe com 9 tabuleiros! Desafie um amigo nesse jogo da velha avançado.</p>
                 <a href="https://daniloaraujoalves-sudo.github.io/X-vs-O/" target="_blank" class="btn-jogar">Jogar Agora</a>
+            </div>
+
+            <!-- Void Command (novo) -->
+            <div class="game-card destaque">
+                <span class="game-icon">🚀</span>
+                <h3>Void Command</h3>
+                <p>Space Shooter! Controle sua nave, sobreviva às ondas e proteja o espaço.</p>
+                <a href="https://6a47a70461363018cbe648cb--voidcommandergame.netlify.app/" target="_blank" class="btn-jogar">Jogar Agora</a>
             </div>
 
             <!-- Outros jogos -->
@@ -280,13 +278,6 @@
             </div>
 
             <div class="game-card">
-                <span class="game-icon">😈</span>
-                <h3>Level Devil</h3>
-                <p>Plataforma cheia de armadilhas. Não confie em nada nessa fase!</p>
-                <a href="https://poki.com/br/g/level-devil" target="_blank" class="btn-jogar">Jogar Agora</a>
-            </div>
-
-            <div class="game-card">
                 <span class="game-icon">🌟</span>
                 <h3>Todos os Jogos</h3>
                 <p>Acesse a página completa com mais de 1000 jogos grátis.</p>
@@ -296,7 +287,6 @@
         </div>
     </main>
 
-    <!-- Rodapé -->
     <footer>
         <div class="container">
             <p>© 2026 Portal de Jogos • Feito com HTML & CSS • Todos os jogos são grátis e online</p>
