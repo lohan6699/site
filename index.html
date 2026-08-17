@@ -173,6 +173,12 @@
             transform: scale(1.05);
         }
 
+        /* Destaque especial para o jogo do usuário */
+        .destaque {
+            border: 2px solid #a78bfa;
+            background: rgba(167, 139, 250, 0.15);
+        }
+
         /* Rodapé */
         footer {
             background: rgba(0, 0, 0, 0.4);
@@ -220,7 +226,7 @@
         <!-- Hero -->
         <section class="hero">
             <h1>Entre nos Jogos Agora!</h1>
-            <p>Escolha um jogo abaixo e divirta-se. Todos são grátis e rodam direto no navegador. Sem baixar nada!</p>
+            <p>Escolha um jogo abaixo e divirta-se. Todos são grátis e rodam direto no navegador.</p>
             <a href="#jogos" class="btn-principal">Ver Jogos ↓</a>
         </section>
 
@@ -229,7 +235,15 @@
 
         <div class="games-grid">
 
-            <!-- Jogo 1 -->
+            <!-- JOGO DO USUÁRIO (em destaque) -->
+            <div class="game-card destaque">
+                <span class="game-icon">❌⭕</span>
+                <h3>Super Jogo da Velha</h3>
+                <p>Ultimate Tic-Tac-Toe com 9 tabuleiros! Desafie um amigo nesse jogo da velha avançado.</p>
+                <a href="https://daniloaraujoalves-sudo.github.io/X-vs-O/" target="_blank" class="btn-jogar">Jogar Agora</a>
+            </div>
+
+            <!-- Outros jogos -->
             <div class="game-card">
                 <span class="game-icon">🏃‍♂️</span>
                 <h3>Subway Surfers</h3>
@@ -237,7 +251,6 @@
                 <a href="https://poki.com/br/g/subway-surfers" target="_blank" class="btn-jogar">Jogar Agora</a>
             </div>
 
-            <!-- Jogo 2 -->
             <div class="game-card">
                 <span class="game-icon">🪝</span>
                 <h3>Stickman Hook</h3>
@@ -245,7 +258,6 @@
                 <a href="https://poki.com/br/g/stickman-hook" target="_blank" class="btn-jogar">Jogar Agora</a>
             </div>
 
-            <!-- Jogo 3 -->
             <div class="game-card">
                 <span class="game-icon">🏍️</span>
                 <h3>Moto X3M</h3>
@@ -253,7 +265,6 @@
                 <a href="https://poki.com/br/g/moto-x3m" target="_blank" class="btn-jogar">Jogar Agora</a>
             </div>
 
-            <!-- Jogo 4 -->
             <div class="game-card">
                 <span class="game-icon">🚗</span>
                 <h3>Drive Mad</h3>
@@ -261,7 +272,6 @@
                 <a href="https://poki.com/br/g/drive-mad" target="_blank" class="btn-jogar">Jogar Agora</a>
             </div>
 
-            <!-- Jogo 5 -->
             <div class="game-card">
                 <span class="game-icon">⚽</span>
                 <h3>Penalty Shooters 2</h3>
@@ -269,7 +279,6 @@
                 <a href="https://poki.com/br/g/penalty-shooters-2" target="_blank" class="btn-jogar">Jogar Agora</a>
             </div>
 
-            <!-- Jogo 6 -->
             <div class="game-card">
                 <span class="game-icon">😈</span>
                 <h3>Level Devil</h3>
@@ -277,15 +286,6 @@
                 <a href="https://poki.com/br/g/level-devil" target="_blank" class="btn-jogar">Jogar Agora</a>
             </div>
 
-            <!-- Jogo 7 -->
-            <div class="game-card">
-                <span class="game-icon">🧩</span>
-                <h3>Cool Math Games</h3>
-                <p>Centenas de jogos de raciocínio, lógica e diversão inteligente.</p>
-                <a href="https://www.coolmathgames.com/" target="_blank" class="btn-jogar">Jogar Agora</a>
-            </div>
-
-            <!-- Jogo 8 -->
             <div class="game-card">
                 <span class="game-icon">🌟</span>
                 <h3>Todos os Jogos</h3>
