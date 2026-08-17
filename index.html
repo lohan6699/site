@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Primeiro Site</title>
+    <title>Portal de Jogos</title>
     <style>
-        /* Reset básico */
         * {
             margin: 0;
             padding: 0;
@@ -13,24 +12,28 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            background-color: #f0f4f8;
-            color: #333;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         /* Cabeçalho */
         header {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 18px 0;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .header-content {
@@ -40,118 +43,160 @@
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
+            font-size: 1.7rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         nav a {
-            color: white;
+            color: #fff;
             text-decoration: none;
-            margin-left: 25px;
+            margin-left: 22px;
             font-weight: 500;
-            transition: opacity 0.3s;
+            opacity: 0.9;
+            transition: 0.2s;
         }
 
         nav a:hover {
-            opacity: 0.8;
+            opacity: 1;
+            color: #a78bfa;
         }
 
-        /* Seção Hero */
+        /* Hero */
         .hero {
-            background: white;
-            padding: 80px 0;
             text-align: center;
-            margin-top: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            padding: 70px 0 50px;
         }
 
         .hero h1 {
-            font-size: 2.8rem;
-            color: #4f46e5;
+            font-size: 3rem;
             margin-bottom: 15px;
+            background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero p {
             font-size: 1.25rem;
-            color: #555;
-            max-width: 600px;
+            opacity: 0.85;
+            max-width: 580px;
             margin: 0 auto 30px;
         }
 
-        .btn {
+        .btn-principal {
             display: inline-block;
-            background: #4f46e5;
+            background: linear-gradient(90deg, #7c3aed, #4f46e5);
             color: white;
-            padding: 14px 32px;
+            padding: 16px 40px;
             border-radius: 50px;
             text-decoration: none;
-            font-weight: 600;
-            transition: background 0.3s, transform 0.2s;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .btn:hover {
-            background: #4338ca;
-            transform: translateY(-3px);
+        .btn-principal:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(124, 58, 237, 0.55);
         }
 
-        /* Cards */
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin: 60px 0;
-        }
-
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+        /* Título da seção */
+        .section-title {
             text-align: center;
-            transition: transform 0.3s;
+            font-size: 1.9rem;
+            margin: 20px 0 35px;
+            color: #e0e7ff;
         }
 
-        .card:hover {
-            transform: translateY(-8px);
+        /* Grid de jogos */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 28px;
+            padding-bottom: 70px;
         }
 
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+        .game-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 28px 22px;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
         }
 
-        .card h3 {
-            color: #4f46e5;
-            margin-bottom: 12px;
+        .game-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.13);
+            border-color: rgba(167, 139, 250, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-icon {
+            font-size: 3.4rem;
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .game-card h3 {
+            font-size: 1.35rem;
+            margin-bottom: 10px;
+            color: #c4b5fd;
+        }
+
+        .game-card p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+            min-height: 48px;
+        }
+
+        .btn-jogar {
+            display: inline-block;
+            background: #7c3aed;
+            color: white;
+            padding: 11px 28px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .btn-jogar:hover {
+            background: #6d28d9;
+            transform: scale(1.05);
         }
 
         /* Rodapé */
         footer {
-            background: #1e1b4b;
-            color: white;
+            background: rgba(0, 0, 0, 0.4);
             text-align: center;
-            padding: 30px 0;
-            margin-top: 60px;
-        }
-
-        footer p {
+            padding: 28px 0;
+            font-size: 0.95rem;
             opacity: 0.85;
+            border-top: 1px solid rgba(255,255,255,0.08);
         }
 
         /* Responsivo */
         @media (max-width: 700px) {
             .header-content {
                 flex-direction: column;
-                gap: 15px;
+                gap: 14px;
             }
-
             nav a {
-                margin: 0 12px;
+                margin: 0 10px;
             }
-
             .hero h1 {
-                font-size: 2.1rem;
+                font-size: 2.2rem;
+            }
+            .hero {
+                padding: 50px 0 35px;
             }
         }
     </style>
@@ -161,52 +206,100 @@
     <!-- Cabeçalho -->
     <header>
         <div class="container header-content">
-            <div class="logo">🌟 Meu Site</div>
+            <div class="logo">🎮 Portal de Jogos</div>
             <nav>
                 <a href="#">Início</a>
-                <a href="#sobre">Sobre</a>
-                <a href="#contato">Contato</a>
+                <a href="#jogos">Jogos</a>
+                <a href="https://poki.com/br" target="_blank">Mais Jogos</a>
             </nav>
         </div>
     </header>
 
-    <!-- Conteúdo principal -->
     <main class="container">
 
         <!-- Hero -->
         <section class="hero">
-            <h1>Bem-vindo ao meu site!</h1>
-            <p>Este é o meu primeiro site criado com HTML e CSS. Aqui você encontra um design limpo, moderno e totalmente responsivo.</p>
-            <a href="#sobre" class="btn">Saiba mais</a>
+            <h1>Entre nos Jogos Agora!</h1>
+            <p>Escolha um jogo abaixo e divirta-se. Todos são grátis e rodam direto no navegador. Sem baixar nada!</p>
+            <a href="#jogos" class="btn-principal">Ver Jogos ↓</a>
         </section>
 
-        <!-- Cards -->
-        <section class="cards" id="sobre">
-            <div class="card">
-                <div class="card-icon">🚀</div>
-                <h3>Rápido</h3>
-                <p>Carrega rapidinho e funciona bem em qualquer dispositivo.</p>
+        <!-- Lista de jogos -->
+        <h2 class="section-title" id="jogos">Jogos Populares</h2>
+
+        <div class="games-grid">
+
+            <!-- Jogo 1 -->
+            <div class="game-card">
+                <span class="game-icon">🏃‍♂️</span>
+                <h3>Subway Surfers</h3>
+                <p>Corra pelos trilhos do metrô e fuja do inspetor. Clássico e viciante!</p>
+                <a href="https://poki.com/br/g/subway-surfers" target="_blank" class="btn-jogar">Jogar Agora</a>
             </div>
 
-            <div class="card">
-                <div class="card-icon">🎨</div>
-                <h3>Bonito</h3>
-                <p>Design moderno com cores suaves e animações leves.</p>
+            <!-- Jogo 2 -->
+            <div class="game-card">
+                <span class="game-icon">🪝</span>
+                <h3>Stickman Hook</h3>
+                <p>Balance no gancho e atravesse os obstáculos com timing perfeito.</p>
+                <a href="https://poki.com/br/g/stickman-hook" target="_blank" class="btn-jogar">Jogar Agora</a>
             </div>
 
-            <div class="card">
-                <div class="card-icon">📱</div>
-                <h3>Responsivo</h3>
-                <p>Fica perfeito no celular, tablet e computador.</p>
+            <!-- Jogo 3 -->
+            <div class="game-card">
+                <span class="game-icon">🏍️</span>
+                <h3>Moto X3M</h3>
+                <p>Faça manobras radicais e complete as pistas cheias de obstáculos.</p>
+                <a href="https://poki.com/br/g/moto-x3m" target="_blank" class="btn-jogar">Jogar Agora</a>
             </div>
-        </section>
 
+            <!-- Jogo 4 -->
+            <div class="game-card">
+                <span class="game-icon">🚗</span>
+                <h3>Drive Mad</h3>
+                <p>Controle o carro em pistas malucas. Equilíbrio e velocidade!</p>
+                <a href="https://poki.com/br/g/drive-mad" target="_blank" class="btn-jogar">Jogar Agora</a>
+            </div>
+
+            <!-- Jogo 5 -->
+            <div class="game-card">
+                <span class="game-icon">⚽</span>
+                <h3>Penalty Shooters 2</h3>
+                <p>Cobre os pênaltis e defenda o gol. Perfeito para jogar com amigos.</p>
+                <a href="https://poki.com/br/g/penalty-shooters-2" target="_blank" class="btn-jogar">Jogar Agora</a>
+            </div>
+
+            <!-- Jogo 6 -->
+            <div class="game-card">
+                <span class="game-icon">😈</span>
+                <h3>Level Devil</h3>
+                <p>Plataforma cheia de armadilhas. Não confie em nada nessa fase!</p>
+                <a href="https://poki.com/br/g/level-devil" target="_blank" class="btn-jogar">Jogar Agora</a>
+            </div>
+
+            <!-- Jogo 7 -->
+            <div class="game-card">
+                <span class="game-icon">🧩</span>
+                <h3>Cool Math Games</h3>
+                <p>Centenas de jogos de raciocínio, lógica e diversão inteligente.</p>
+                <a href="https://www.coolmathgames.com/" target="_blank" class="btn-jogar">Jogar Agora</a>
+            </div>
+
+            <!-- Jogo 8 -->
+            <div class="game-card">
+                <span class="game-icon">🌟</span>
+                <h3>Todos os Jogos</h3>
+                <p>Acesse a página completa com mais de 1000 jogos grátis.</p>
+                <a href="https://poki.com/br" target="_blank" class="btn-jogar">Abrir Poki</a>
+            </div>
+
+        </div>
     </main>
 
     <!-- Rodapé -->
-    <footer id="contato">
+    <footer>
         <div class="container">
-            <p>© 2026 - Meu Primeiro Site • Feito com HTML & CSS</p>
+            <p>© 2026 Portal de Jogos • Feito com HTML & CSS • Todos os jogos são grátis e online</p>
         </div>
     </footer>
 
