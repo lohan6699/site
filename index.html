@@ -25,9 +25,88 @@
             margin: 0 auto;
         }
 
+        /* ========== TELA DE LOGIN ========== */
+        #telaLogin {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .login-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(167, 139, 250, 0.4);
+            border-radius: 20px;
+            padding: 40px 35px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .login-box h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #c4b5fd;
+        }
+
+        .login-box p {
+            opacity: 0.8;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08);
+            color: white;
+            font-size: 1.05rem;
+            margin-bottom: 18px;
+            outline: none;
+        }
+
+        .login-box input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .login-box input:focus {
+            border-color: #a78bfa;
+        }
+
+        .btn-entrar {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #7c3aed, #4f46e5);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-entrar:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ========== SITE PRINCIPAL ========== */
+        #sitePrincipal {
+            display: none;
+        }
+
         header {
             background: rgba(0, 0, 0, 0.35);
-            padding: 18px 0;
+            padding: 16px 0;
             position: sticky;
             top: 0;
             backdrop-filter: blur(10px);
@@ -39,38 +118,79 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .logo {
-            font-size: 1.7rem;
+            font-size: 1.6rem;
             font-weight: 800;
+        }
+
+        .user-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .score-box {
+            background: rgba(167, 139, 250, 0.25);
+            border: 1px solid #a78bfa;
+            padding: 7px 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .score-box span {
+            color: #34d399;
+        }
+
+        .nome-usuario {
+            background: rgba(52, 211, 153, 0.2);
+            border: 1px solid #34d399;
+            padding: 7px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .btn-sair {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 7px 14px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-sair:hover {
+            background: rgba(239, 68, 68, 0.35);
         }
 
         nav a {
             color: #fff;
             text-decoration: none;
-            margin-left: 22px;
+            margin-left: 16px;
             font-weight: 500;
             opacity: 0.9;
-            transition: 0.2s;
         }
 
         nav a:hover {
-            opacity: 1;
             color: #a78bfa;
         }
 
         .hero {
             text-align: center;
-            padding: 70px 0 50px;
+            padding: 50px 0 30px;
         }
 
         .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 15px;
+            font-size: 2.6rem;
+            margin-bottom: 10px;
             background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -78,90 +198,100 @@
         }
 
         .hero p {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             opacity: 0.85;
-            max-width: 580px;
-            margin: 0 auto 30px;
+            margin-bottom: 22px;
+        }
+
+        .botoes-hero {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .btn-principal {
             display: inline-block;
             background: linear-gradient(90deg, #7c3aed, #4f46e5);
             color: white;
-            padding: 16px 40px;
+            padding: 13px 28px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
-            font-size: 1.1rem;
-            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
         .btn-principal:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 30px rgba(124, 58, 237, 0.55);
+            transform: translateY(-2px);
+        }
+
+        .btn-ranking {
+            background: linear-gradient(90deg, #059669, #10b981);
         }
 
         .section-title {
             text-align: center;
-            font-size: 1.9rem;
-            margin: 20px 0 35px;
+            font-size: 1.7rem;
+            margin: 10px 0 25px;
             color: #e0e7ff;
         }
 
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 28px;
-            padding-bottom: 70px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 22px;
+            padding-bottom: 50px;
         }
 
         .game-card {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            padding: 28px 22px;
+            border-radius: 16px;
+            padding: 22px 18px;
             text-align: center;
             transition: all 0.3s ease;
-            backdrop-filter: blur(8px);
         }
 
         .game-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-7px);
             background: rgba(255, 255, 255, 0.13);
             border-color: rgba(167, 139, 250, 0.5);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
         }
 
         .game-icon {
-            font-size: 3.4rem;
-            margin-bottom: 14px;
+            font-size: 3rem;
+            margin-bottom: 10px;
             display: block;
         }
 
         .game-card h3 {
-            font-size: 1.35rem;
-            margin-bottom: 10px;
+            font-size: 1.25rem;
+            margin-bottom: 6px;
             color: #c4b5fd;
         }
 
         .game-card p {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             opacity: 0.8;
-            margin-bottom: 20px;
-            min-height: 48px;
+            margin-bottom: 15px;
+            min-height: 40px;
         }
 
         .btn-jogar {
             display: inline-block;
             background: #7c3aed;
             color: white;
-            padding: 11px 28px;
+            padding: 10px 22px;
             border-radius: 40px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.95rem;
-            transition: background 0.2s, transform 0.2s;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-jogar:hover {
@@ -174,132 +304,326 @@
             background: rgba(167, 139, 250, 0.15);
         }
 
+        /* Ranking */
+        .ranking-box {
+            display: none;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(167, 139, 250, 0.4);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 40px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .ranking-box.mostrar {
+            display: block;
+        }
+
+        .ranking-box h2 {
+            text-align: center;
+            margin-bottom: 18px;
+            color: #c4b5fd;
+        }
+
+        .ranking-lista {
+            list-style: none;
+        }
+
+        .ranking-lista li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 11px 16px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+        }
+
+        .ranking-lista li.voce {
+            background: rgba(52, 211, 153, 0.2);
+            border: 1px solid #34d399;
+            font-weight: 700;
+        }
+
+        .posicao {
+            font-weight: 800;
+            color: #a78bfa;
+            width: 32px;
+        }
+
+        .mensagem-pontos {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #34d399;
+            color: #064e3b;
+            padding: 11px 26px;
+            border-radius: 50px;
+            font-weight: 700;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .mensagem-pontos.mostrar {
+            opacity: 1;
+        }
+
         footer {
             background: rgba(0, 0, 0, 0.4);
             text-align: center;
-            padding: 28px 0;
-            font-size: 0.95rem;
+            padding: 22px 0;
+            font-size: 0.9rem;
             opacity: 0.85;
-            border-top: 1px solid rgba(255,255,255,0.08);
         }
 
         @media (max-width: 700px) {
             .header-content {
                 flex-direction: column;
-                gap: 14px;
+                gap: 10px;
             }
             nav a {
-                margin: 0 10px;
+                margin: 0 8px;
             }
             .hero h1 {
-                font-size: 2.2rem;
-            }
-            .hero {
-                padding: 50px 0 35px;
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="container header-content">
-            <div class="logo">🎮 Portal de Jogos</div>
-            <nav>
-                <a href="#">Início</a>
-                <a href="#jogos">Jogos</a>
-                <a href="https://poki.com/br" target="_blank">Mais Jogos</a>
-            </nav>
+    <!-- ========== TELA DE LOGIN ========== -->
+    <div id="telaLogin">
+        <div class="login-box">
+            <h2>🎮 Portal de Jogos</h2>
+            <p>Digite seu nome para começar a jogar</p>
+            <input type="text" id="inputNome" placeholder="Seu nome ou apelido" maxlength="15" autofocus>
+            <button class="btn-entrar" onclick="fazerLogin()">Entrar</button>
         </div>
-    </header>
+    </div>
 
-    <main class="container">
+    <!-- ========== SITE PRINCIPAL ========== -->
+    <div id="sitePrincipal">
 
-        <section class="hero">
-            <h1>Entre nos Jogos Agora!</h1>
-            <p>Escolha um jogo abaixo e divirta-se. Todos são grátis e rodam direto no navegador.</p>
-            <a href="#jogos" class="btn-principal">Ver Jogos ↓</a>
-        </section>
+        <div class="mensagem-pontos" id="mensagemPontos">+15 pontos!</div>
 
-        <h2 class="section-title" id="jogos">Jogos Populares</h2>
+        <header>
+            <div class="container header-content">
+                <div class="logo">🎮 Portal de Jogos</div>
+                
+                <div class="user-info">
+                    <div class="nome-usuario" id="nomeExibido">Jogador</div>
+                    <div class="score-box">
+                        Pontos: <span id="pontuacao">0</span>
+                    </div>
+                    <button class="btn-sair" onclick="fazerLogout()">Sair</button>
+                </div>
 
-        <div class="games-grid">
+                <nav>
+                    <a href="#">Início</a>
+                    <a href="#jogos">Jogos</a>
+                    <a href="https://poki.com/br" target="_blank">Mais Jogos</a>
+                </nav>
+            </div>
+        </header>
 
-            <!-- Super Jogo da Velha -->
-            <div class="game-card destaque">
-                <span class="game-icon">❌⭕</span>
-                <h3>Super Jogo da Velha</h3>
-                <p>Ultimate Tic-Tac-Toe com 9 tabuleiros! Desafie um amigo nesse jogo da velha avançado.</p>
-                <a href="https://daniloaraujoalves-sudo.github.io/X-vs-O/" target="_blank" class="btn-jogar">Jogar Agora</a>
+        <main class="container">
+
+            <section class="hero">
+                <h1>Bem-vindo, <span id="nomeHero">Jogador</span>!</h1>
+                <p>Clique nos jogos para ganhar pontos e subir no ranking!</p>
+                
+                <div class="botoes-hero">
+                    <a href="#jogos" class="btn-principal">Ver Jogos ↓</a>
+                    <button class="btn-principal btn-ranking" onclick="mostrarRanking()">Ver Ranking</button>
+                </div>
+            </section>
+
+            <!-- Ranking -->
+            <div class="ranking-box" id="rankingBox">
+                <h2>🏆 Ranking de Jogadores</h2>
+                <ul class="ranking-lista" id="listaRanking"></ul>
             </div>
 
-            <!-- Void Command -->
-            <div class="game-card destaque">
-                <span class="game-icon">🚀</span>
-                <h3>Void Command</h3>
-                <p>Space Shooter! Controle sua nave, sobreviva às ondas e proteja o espaço.</p>
-                <a href="https://6a47a70461363018cbe648cb--voidcommandergame.netlify.app/" target="_blank" class="btn-jogar">Jogar Agora</a>
+            <h2 class="section-title" id="jogos">Jogos Populares</h2>
+
+            <div class="games-grid">
+
+                <div class="game-card destaque">
+                    <span class="game-icon">❌⭕</span>
+                    <h3>Super Jogo da Velha</h3>
+                    <p>Ultimate Tic-Tac-Toe com 9 tabuleiros!</p>
+                    <a href="https://daniloaraujoalves-sudo.github.io/X-vs-O/" target="_blank" class="btn-jogar" onclick="adicionarPontos()">Jogar Agora</a>
+                </div>
+
+                <div class="game-card destaque">
+                    <span class="game-icon">🚀</span>
+                    <h3>Void Command</h3>
+                    <p>Space Shooter! Controle sua nave e sobreviva.</p>
+                    <a href="https://litter.catbox.moe/ili26j.html" target="_blank" class="btn-jogar" onclick="adicionarPontos()">Jogar Agora</a>
+                </div>
+
+                <div class="game-card">
+                    <span class="game-icon">🏃‍♂️</span>
+                    <h3>Subway Surfers</h3>
+                    <p>Corra pelos trilhos e fuja do inspetor.</p>
+                    <a href="https://poki.com/br/g/subway-surfers" target="_blank" class="btn-jogar" onclick="adicionarPontos()">Jogar Agora</a>
+                </div>
+
+                <div class="game-card">
+                    <span class="game-icon">🪝</span>
+                    <h3>Stickman Hook</h3>
+                    <p>Balance no gancho e atravesse obstáculos.</p>
+                    <a href="https://poki.com/br/g/stickman-hook" target="_blank" class="btn-jogar" onclick="adicionarPontos()">Jogar Agora</a>
+                </div>
+
+                <div class="game-card">
+                    <span class="game-icon">🏍️</span>
+                    <h3>Moto X3M</h3>
+                    <p>Faça manobras radicais nas pistas.</p>
+                    <a href="https://poki.com/br/g/moto-x3m" target="_blank" class="btn-jogar" onclick="adicionarPontos()">Jogar Agora</a>
+                </div>
+
+                <div class="game-card">
+                    <span class="game-icon">🚗</span>
+                    <h3>Drive Mad</h3>
+                    <p>Controle o carro em pistas malucas.</p>
+                    <a href="https://poki.com/br/g/drive-mad" target="_blank" class="btn-jogar" onclick="adicionarPontos()">Jogar Agora</a>
+                </div>
+
+                <div class="game-card">
+                    <span class="game-icon">⚽</span>
+                    <h3>Penalty Shooters 2</h3>
+                    <p>Cobre os pênaltis e defenda o gol.</p>
+                    <a href="https://poki.com/br/g/penalty-shooters-2" target="_blank" class="btn-jogar" onclick="adicionarPontos()">Jogar Agora</a>
+                </div>
+
+                <div class="game-card">
+                    <span class="game-icon">🌟</span>
+                    <h3>Todos os Jogos</h3>
+                    <p>Mais de 1000 jogos grátis no Poki.</p>
+                    <a href="https://poki.com/br" target="_blank" class="btn-jogar" onclick="adicionarPontos()">Abrir Poki</a>
+                </div>
+
             </div>
+        </main>
 
-            <!-- Ice Race (novo) -->
-            <div class="game-card destaque">
-                <span class="game-icon">🐧</span>
-                <h3>Ice Race</h3>
-                <p>Corra com o pinguim, colete pontos e use power-ups! Níveis cada vez mais desafiadores.</p>
-                <a href="https://lohan6699.github.io/jogo-/" target="_blank" class="btn-jogar">Jogar Agora</a>
+        <footer>
+            <div class="container">
+                <p>© 2026 Portal de Jogos • Feito com HTML, CSS e JavaScript</p>
             </div>
+        </footer>
+    </div>
 
-            <!-- Outros jogos -->
-            <div class="game-card">
-                <span class="game-icon">🏃‍♂️</span>
-                <h3>Subway Surfers</h3>
-                <p>Corra pelos trilhos do metrô e fuja do inspetor. Clássico e viciante!</p>
-                <a href="https://poki.com/br/g/subway-surfers" target="_blank" class="btn-jogar">Jogar Agora</a>
-            </div>
+    <script>
+        // ========== SISTEMA DE LOGIN ==========
+        const telaLogin = document.getElementById('telaLogin');
+        const sitePrincipal = document.getElementById('sitePrincipal');
+        const inputNome = document.getElementById('inputNome');
 
-            <div class="game-card">
-                <span class="game-icon">🪝</span>
-                <h3>Stickman Hook</h3>
-                <p>Balance no gancho e atravesse os obstáculos com timing perfeito.</p>
-                <a href="https://poki.com/br/g/stickman-hook" target="_blank" class="btn-jogar">Jogar Agora</a>
-            </div>
+        window.onload = function() {
+            const nomeSalvo = localStorage.getItem('nomeUsuario');
+            if (nomeSalvo) {
+                entrarNoSite(nomeSalvo);
+            }
+        };
 
-            <div class="game-card">
-                <span class="game-icon">🏍️</span>
-                <h3>Moto X3M</h3>
-                <p>Faça manobras radicais e complete as pistas cheias de obstáculos.</p>
-                <a href="https://poki.com/br/g/moto-x3m" target="_blank" class="btn-jogar">Jogar Agora</a>
-            </div>
+        inputNome.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                fazerLogin();
+            }
+        });
 
-            <div class="game-card">
-                <span class="game-icon">🚗</span>
-                <h3>Drive Mad</h3>
-                <p>Controle o carro em pistas malucas. Equilíbrio e velocidade!</p>
-                <a href="https://poki.com/br/g/drive-mad" target="_blank" class="btn-jogar">Jogar Agora</a>
-            </div>
+        function fazerLogin() {
+            const nome = inputNome.value.trim();
+            if (nome.length < 2) {
+                alert('Digite um nome com pelo menos 2 letras!');
+                return;
+            }
+            localStorage.setItem('nomeUsuario', nome);
+            entrarNoSite(nome);
+        }
 
-            <div class="game-card">
-                <span class="game-icon">⚽</span>
-                <h3>Penalty Shooters 2</h3>
-                <p>Cobre os pênaltis e defenda o gol. Perfeito para jogar com amigos.</p>
-                <a href="https://poki.com/br/g/penalty-shooters-2" target="_blank" class="btn-jogar">Jogar Agora</a>
-            </div>
+        function entrarNoSite(nome) {
+            telaLogin.style.display = 'none';
+            sitePrincipal.style.display = 'block';
+            document.getElementById('nomeExibido').textContent = nome;
+            document.getElementById('nomeHero').textContent = nome;
+            carregarPontuacao();
+        }
 
-            <div class="game-card">
-                <span class="game-icon">🌟</span>
-                <h3>Todos os Jogos</h3>
-                <p>Acesse a página completa com mais de 1000 jogos grátis.</p>
-                <a href="https://poki.com/br" target="_blank" class="btn-jogar">Abrir Poki</a>
-            </div>
+        function fazerLogout() {
+            localStorage.removeItem('nomeUsuario');
+            localStorage.removeItem('pontuacaoPortal');
+            location.reload();
+        }
 
-        </div>
-    </main>
+        // ========== SISTEMA DE PONTUAÇÃO ==========
+        let pontuacao = 0;
 
-    <footer>
-        <div class="container">
-            <p>© 2026 Portal de Jogos • Feito com HTML & CSS • Todos os jogos são grátis e online</p>
-        </div>
-    </footer>
+        function carregarPontuacao() {
+            pontuacao = parseInt(localStorage.getItem('pontuacaoPortal')) || 0;
+            document.getElementById('pontuacao').textContent = pontuacao;
+        }
+
+        function adicionarPontos() {
+            pontuacao += 15;
+            localStorage.setItem('pontuacaoPortal', pontuacao);
+            document.getElementById('pontuacao').textContent = pontuacao;
+
+            const msg = document.getElementById('mensagemPontos');
+            msg.classList.add('mostrar');
+            setTimeout(() => msg.classList.remove('mostrar'), 1200);
+
+            if (document.getElementById('rankingBox').classList.contains('mostrar')) {
+                atualizarRanking();
+            }
+        }
+
+        // ========== SISTEMA DE RANKING ==========
+        function atualizarRanking() {
+            const nomeAtual = localStorage.getItem('nomeUsuario') || 'Você';
+            
+            const jogadores = [
+                { nome: "SpaceMaster", pontos: 320 },
+                { nome: "NinjaVeloz", pontos: 245 },
+                { nome: "GamerPro", pontos: 180 },
+                { nome: nomeAtual, pontos: pontuacao },
+                { nome: "NovaEstrela", pontos: 95 }
+            ];
+
+            jogadores.sort((a, b) => b.pontos - a.pontos);
+
+            const lista = document.getElementById('listaRanking');
+            lista.innerHTML = '';
+
+            jogadores.forEach((jogador, index) => {
+                const li = document.createElement('li');
+                if (jogador.nome === nomeAtual) {
+                    li.classList.add('voce');
+                }
+                li.innerHTML = `
+                    <span class="posicao">${index + 1}º</span>
+                    <span>${jogador.nome}</span>
+                    <span>${jogador.pontos} pts</span>
+                `;
+                lista.appendChild(li);
+            });
+        }
+
+        function mostrarRanking() {
+            const box = document.getElementById('rankingBox');
+            box.classList.toggle('mostrar');
+            if (box.classList.contains('mostrar')) {
+                atualizarRanking();
+            }
+        }
+    </script>
 
 </body>
 </html>
