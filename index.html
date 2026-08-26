@@ -12,6 +12,7 @@
             --roxo-claro: #a78bfa;
             --verde: #34d399;
             --vermelho: #ef4444;
+            --dourado: #fbbf24;
             --fundo: #0f0c29;
             --raio: 16px;
         }
@@ -344,6 +345,174 @@
             color: #e0e7ff;
         }
 
+        /* Banner de destaque rotativo */
+        .destaque-banner {
+            max-width: 780px;
+            margin: 0 auto 36px;
+            position: relative;
+        }
+
+        .destaque-slide {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.28), rgba(16, 185, 129, 0.14));
+            border: 1px solid rgba(167, 139, 250, 0.45);
+            border-radius: 22px;
+            padding: 30px 26px;
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.4s ease;
+        }
+
+        .destaque-slide .game-icon {
+            font-size: 3.6rem;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .destaque-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .destaque-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--roxo-claro);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .destaque-titulo {
+            font-size: 1.4rem;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .destaque-desc {
+            font-size: 0.92rem;
+            opacity: 0.85;
+            margin-bottom: 12px;
+        }
+
+        .destaque-rodape {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .destaque-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .dot.ativo {
+            background: var(--roxo-claro);
+            transform: scale(1.3);
+        }
+
+        @media (max-width: 560px) {
+            .destaque-slide {
+                flex-direction: column;
+                text-align: center;
+            }
+            .destaque-rodape {
+                justify-content: center;
+            }
+        }
+
+        /* Avaliações */
+        .estrelas-media {
+            font-size: 0.95rem;
+            color: var(--dourado);
+            letter-spacing: 1px;
+        }
+
+        .estrelas-media .nota-num {
+            color: #e0e7ff;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+
+        .estrelas-media .contagem {
+            color: #e0e7ff;
+            opacity: 0.6;
+            font-size: 0.8rem;
+        }
+
+        .sua-nota {
+            margin-top: 10px;
+            font-size: 0.78rem;
+            opacity: 0.85;
+        }
+
+        .estrelas-interativas {
+            display: inline-flex;
+            gap: 2px;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+
+        .estrela {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.15rem;
+            color: rgba(255,255,255,0.3);
+            padding: 2px;
+            line-height: 1;
+            transition: color 0.15s, transform 0.15s;
+        }
+
+        .estrela:hover,
+        .estrela:focus-visible {
+            transform: scale(1.15);
+        }
+
+        .estrela.preenchida {
+            color: var(--dourado);
+        }
+
+        /* Barra de filtros */
+        .barra-filtros {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+            max-width: 1200px;
+            margin: -14px auto 22px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .barra-filtros select {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 10px;
+            padding: 6px 10px;
+            font-size: 0.9rem;
+        }
+
+        .barra-filtros select:focus-visible {
+            outline: 2px solid var(--verde);
+        }
+
         /* Cards de jogos */
         .games-grid {
             display: grid;
@@ -620,75 +789,105 @@
                 <ul class="ranking-lista" id="listaRanking"></ul>
             </div>
 
+            <div class="destaque-banner" id="destaqueBanner" aria-label="Jogo em destaque">
+                <div class="destaque-slide" id="destaqueSlide"></div>
+                <div class="destaque-dots" id="destaqueDots"></div>
+            </div>
+
             <h2 class="section-title" id="jogos">Jogos Populares</h2>
 
-            <div class="games-grid">
+            <div class="barra-filtros">
+                <label for="ordenarPor">Ordenar por:</label>
+                <select id="ordenarPor" onchange="ordenarJogos(this.value)">
+                    <option value="padrao">Padrão</option>
+                    <option value="nota">Melhor avaliado</option>
+                    <option value="contagem">Mais avaliações</option>
+                </select>
+            </div>
+
+            <div class="games-grid" id="gamesGrid">
 
                 <!-- Super Jogo da Velha -->
-                <div class="game-card destaque" data-jogo="velha">
+                <div class="game-card destaque" data-jogo="velha" data-nota="4.8" data-contagem="212">
                     <span class="game-icon">❌⭕</span>
                     <h3>Super Jogo da Velha</h3>
                     <p>Ultimate Tic-Tac-Toe com 9 tabuleiros!</p>
+                    <div class="estrelas-media"></div>
                     <a href="https://daniloaraujoalves-sudo.github.io/X-vs-O/" target="_blank" rel="noopener" class="btn-jogar" data-jogo-btn="velha">Jogar Agora</a>
+                    <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="velha"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
                 <!-- Void Command -->
-                <div class="game-card destaque" data-jogo="void">
+                <div class="game-card destaque" data-jogo="void" data-nota="4.5" data-contagem="158">
                     <span class="game-icon">🚀</span>
                     <h3>Void Command</h3>
                     <p>Space Shooter! Controle sua nave e sobreviva.</p>
+                    <div class="estrelas-media"></div>
                     <a href="https://litter.catbox.moe/ili26j.html" target="_blank" rel="noopener" class="btn-jogar" data-jogo-btn="void">Jogar Agora</a>
+                    <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="void"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
                 <!-- Sub Surf 3D -->
-                <div class="game-card destaque" data-jogo="subsurf">
+                <div class="game-card destaque" data-jogo="subsurf" data-nota="4.6" data-contagem="97">
                     <span class="game-icon">🏄‍♂️</span>
                     <h3>Sub Surf 3D</h3>
                     <p>Corrida infinita 3D! Desvie dos obstáculos e colete moedas.</p>
+                    <div class="estrelas-media"></div>
                     <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/pedrolimaoliveira11-maker/jogo/main/index.html" target="_blank" rel="noopener" class="btn-jogar" data-jogo-btn="subsurf">Jogar Agora</a>
+                    <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="subsurf"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
                 <!-- Outros jogos -->
-                <div class="game-card" data-jogo="subway">
+                <div class="game-card" data-jogo="subway" data-nota="4.7" data-contagem="340">
                     <span class="game-icon">🏃‍♂️</span>
                     <h3>Subway Surfers</h3>
                     <p>Corra pelos trilhos e fuja do inspetor.</p>
+                    <div class="estrelas-media"></div>
                     <a href="https://poki.com/br/g/subway-surfers" target="_blank" rel="noopener" class="btn-jogar" data-jogo-btn="subway">Jogar Agora</a>
+                    <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="subway"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
-                <div class="game-card" data-jogo="stickman">
+                <div class="game-card" data-jogo="stickman" data-nota="4.4" data-contagem="120">
                     <span class="game-icon">🪝</span>
                     <h3>Stickman Hook</h3>
                     <p>Balance no gancho e atravesse obstáculos.</p>
+                    <div class="estrelas-media"></div>
                     <a href="https://poki.com/br/g/stickman-hook" target="_blank" rel="noopener" class="btn-jogar" data-jogo-btn="stickman">Jogar Agora</a>
+                    <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="stickman"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
-                <div class="game-card" data-jogo="moto">
+                <div class="game-card" data-jogo="moto" data-nota="4.6" data-contagem="205">
                     <span class="game-icon">🏍️</span>
                     <h3>Moto X3M</h3>
                     <p>Faça manobras radicais nas pistas.</p>
+                    <div class="estrelas-media"></div>
                     <a href="https://poki.com/br/g/moto-x3m" target="_blank" rel="noopener" class="btn-jogar" data-jogo-btn="moto">Jogar Agora</a>
+                    <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="moto"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
-                <div class="game-card" data-jogo="drive">
+                <div class="game-card" data-jogo="drive" data-nota="4.3" data-contagem="88">
                     <span class="game-icon">🚗</span>
                     <h3>Drive Mad</h3>
                     <p>Controle o carro em pistas malucas.</p>
+                    <div class="estrelas-media"></div>
                     <a href="https://poki.com/br/g/drive-mad" target="_blank" rel="noopener" class="btn-jogar" data-jogo-btn="drive">Jogar Agora</a>
+                    <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="drive"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
-                <div class="game-card" data-jogo="penalty">
+                <div class="game-card" data-jogo="penalty" data-nota="4.2" data-contagem="76">
                     <span class="game-icon">⚽</span>
                     <h3>Penalty Shooters 2</h3>
                     <p>Cobre os pênaltis e defenda o gol.</p>
+                    <div class="estrelas-media"></div>
                     <a href="https://poki.com/br/g/penalty-shooters-2" target="_blank" rel="noopener" class="btn-jogar" data-jogo-btn="penalty">Jogar Agora</a>
+                    <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="penalty"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
@@ -757,6 +956,8 @@
             document.getElementById('nomeExibido').title = nome;
             carregarPontuacao();
             carregarJogosJogados();
+            renderizarAvaliacoes();
+            iniciarDestaqueBanner();
         }
 
         function fazerLogout() {
@@ -902,6 +1103,200 @@
             if (box.classList.contains('mostrar')) {
                 atualizarRanking();
             }
+        }
+
+        // ========== AVALIAÇÕES ==========
+        function carregarMinhasAvaliacoes() {
+            try {
+                return JSON.parse(localStorage.getItem('minhasAvaliacoes')) || {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function estrelasTexto(nota) {
+            const cheias = Math.round(nota);
+            return '★'.repeat(cheias) + '☆'.repeat(5 - cheias);
+        }
+
+        function renderizarAvaliacoes() {
+            const minhas = carregarMinhasAvaliacoes();
+
+            document.querySelectorAll('.game-card').forEach(card => {
+                const nota = parseFloat(card.dataset.nota);
+                const contagem = card.dataset.contagem;
+
+                // Nota média (editorial, exibida como referência de popularidade)
+                const mediaEl = card.querySelector('.estrelas-media');
+                if (mediaEl) {
+                    mediaEl.innerHTML = `${estrelasTexto(nota)} <span class="nota-num">${nota.toFixed(1)}</span> <span class="contagem">(${contagem})</span>`;
+                }
+
+                // Sua nota (interativa, salva localmente)
+                const jogoId = card.dataset.jogo;
+                const container = card.querySelector('[data-jogo-avaliar]');
+                if (container) {
+                    container.innerHTML = '';
+                    for (let i = 1; i <= 5; i++) {
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'estrela';
+                        btn.dataset.valor = i;
+                        btn.setAttribute('aria-label', `Avaliar com ${i} estrela${i > 1 ? 's' : ''}`);
+                        btn.textContent = '★';
+                        if (minhas[jogoId] && i <= minhas[jogoId]) {
+                            btn.classList.add('preenchida');
+                        }
+                        btn.addEventListener('click', () => avaliarJogo(jogoId, i, card));
+                        container.appendChild(btn);
+                    }
+                }
+            });
+        }
+
+        function avaliarJogo(jogoId, valor, card) {
+            const minhas = carregarMinhasAvaliacoes();
+            const primeiraVez = !minhas[jogoId];
+            minhas[jogoId] = valor;
+            localStorage.setItem('minhasAvaliacoes', JSON.stringify(minhas));
+
+            renderizarAvaliacoes();
+
+            if (primeiraVez) {
+                const pontosAntigos = pontuacao;
+                pontuacao += 5;
+                localStorage.setItem('pontuacaoPortal', pontuacao);
+                animarNumero(pontosAntigos, pontuacao);
+
+                const msg = document.getElementById('mensagemPontos');
+                msg.textContent = '+5 pontos por avaliar! ⭐';
+                msg.classList.add('mostrar');
+                setTimeout(() => msg.classList.remove('mostrar'), 1400);
+
+                if (document.getElementById('rankingBox').classList.contains('mostrar')) {
+                    atualizarRanking();
+                }
+            }
+        }
+
+        // ========== ORDENAÇÃO ==========
+        function ordenarJogos(criterio) {
+            const grid = document.getElementById('gamesGrid');
+            const cards = Array.from(grid.querySelectorAll('.game-card'));
+
+            if (criterio === 'nota') {
+                cards.sort((a, b) => parseFloat(b.dataset.nota) - parseFloat(a.dataset.nota));
+            } else if (criterio === 'contagem') {
+                cards.sort((a, b) => parseInt(b.dataset.contagem) - parseInt(a.dataset.contagem));
+            } else {
+                cards.sort((a, b) => a.dataset.ordemOriginal - b.dataset.ordemOriginal);
+            }
+
+            cards.forEach(card => grid.appendChild(card));
+        }
+
+        // Guarda a ordem original dos cards para a opção "Padrão"
+        document.querySelectorAll('#gamesGrid .game-card').forEach((card, index) => {
+            card.dataset.ordemOriginal = index;
+        });
+
+        // ========== BANNER DE DESTAQUE ROTATIVO ==========
+        let destaqueIndex = 0;
+        let destaqueIntervalo = null;
+        const cardsDestaque = Array.from(document.querySelectorAll('.game-card.destaque'));
+
+        function renderizarDestaqueSlide(index) {
+            const card = cardsDestaque[index];
+            if (!card) return;
+
+            const icone = card.querySelector('.game-icon').textContent;
+            const titulo = card.querySelector('h3').textContent;
+            const desc = card.querySelector('p').textContent;
+            const link = card.querySelector('.btn-jogar').getAttribute('href');
+            const jogoId = card.dataset.jogo;
+            const nota = parseFloat(card.dataset.nota);
+            const contagem = card.dataset.contagem;
+
+            const slide = document.getElementById('destaqueSlide');
+            slide.innerHTML = '';
+
+            const iconeEl = document.createElement('span');
+            iconeEl.className = 'game-icon';
+            iconeEl.textContent = icone;
+
+            const info = document.createElement('div');
+            info.className = 'destaque-info';
+
+            const eyebrow = document.createElement('div');
+            eyebrow.className = 'destaque-eyebrow';
+            eyebrow.textContent = '★ Em destaque';
+
+            const tituloEl = document.createElement('div');
+            tituloEl.className = 'destaque-titulo';
+            tituloEl.textContent = titulo;
+
+            const descEl = document.createElement('div');
+            descEl.className = 'destaque-desc';
+            descEl.textContent = desc;
+
+            const rodape = document.createElement('div');
+            rodape.className = 'destaque-rodape';
+
+            const estrelasEl = document.createElement('div');
+            estrelasEl.className = 'estrelas-media';
+            estrelasEl.innerHTML = `${estrelasTexto(nota)} <span class="nota-num">${nota.toFixed(1)}</span> <span class="contagem">(${contagem})</span>`;
+
+            const botao = document.createElement('a');
+            botao.href = link;
+            botao.target = '_blank';
+            botao.rel = 'noopener';
+            botao.className = 'btn-jogar';
+            botao.textContent = 'Jogar Agora';
+            botao.addEventListener('click', () => adicionarPontos(jogoId, card));
+
+            rodape.append(estrelasEl, botao);
+            info.append(eyebrow, tituloEl, descEl, rodape);
+            slide.append(iconeEl, info);
+
+            document.querySelectorAll('.dot').forEach((dot, i) => {
+                dot.classList.toggle('ativo', i === index);
+            });
+        }
+
+        function irParaSlide(index) {
+            destaqueIndex = index;
+            renderizarDestaqueSlide(destaqueIndex);
+        }
+
+        function iniciarDestaqueBanner() {
+            if (cardsDestaque.length === 0) return;
+
+            const dotsWrap = document.getElementById('destaqueDots');
+            dotsWrap.innerHTML = '';
+            cardsDestaque.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'dot';
+                dot.setAttribute('aria-label', `Ver destaque ${i + 1}`);
+                dot.addEventListener('click', () => {
+                    irParaSlide(i);
+                    reiniciarAutoRotate();
+                });
+                dotsWrap.appendChild(dot);
+            });
+
+            renderizarDestaqueSlide(destaqueIndex);
+            reiniciarAutoRotate();
+        }
+
+        function reiniciarAutoRotate() {
+            if (destaqueIntervalo) clearInterval(destaqueIntervalo);
+            const prefereReduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefereReduzido || cardsDestaque.length <= 1) return;
+
+            destaqueIntervalo = setInterval(() => {
+                destaqueIndex = (destaqueIndex + 1) % cardsDestaque.length;
+                renderizarDestaqueSlide(destaqueIndex);
+            }, 6000);
         }
     </script>
 
