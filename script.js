@@ -366,20 +366,16 @@ function renderizarDestaqueSlide(index) {
     const card = cardsDestaque[index];
     if (!card) return;
 
-    const icone = card.querySelector('.game-icon').textContent;
     const titulo = card.querySelector('h3').textContent;
     const desc = card.querySelector('p').textContent;
     const link = card.querySelector('.btn-jogar').getAttribute('href');
     const jogoId = card.dataset.jogo;
     const nota = parseFloat(card.dataset.nota);
     const contagem = card.dataset.contagem;
+    const personagemOriginal = card.querySelector('.personagem-card');
 
     const slide = document.getElementById('destaqueSlide');
     slide.innerHTML = '';
-
-    const iconeEl = document.createElement('span');
-    iconeEl.className = 'game-icon';
-    iconeEl.textContent = icone;
 
     const info = document.createElement('div');
     info.className = 'destaque-info';
@@ -413,7 +409,13 @@ function renderizarDestaqueSlide(index) {
 
     rodape.append(estrelasEl, botao);
     info.append(eyebrow, tituloEl, descEl, rodape);
-    slide.append(iconeEl, info);
+
+    if (personagemOriginal) {
+        const personagemClone = personagemOriginal.cloneNode(true);
+        slide.append(personagemClone, info);
+    } else {
+        slide.append(info);
+    }
 
     document.querySelectorAll('.dot').forEach((dot, i) => {
         dot.classList.toggle('ativo', i === index);

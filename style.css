@@ -602,6 +602,148 @@ nav a:hover {
     display: block;
 }
 
+/* ========== PERSONAGENS ANIMADOS ========== */
+.personagem-card {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.personagem-card svg {
+    width: 92px;
+    height: auto;
+    overflow: visible;
+}
+
+.destaque-slide .personagem-card {
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.destaque-slide .personagem-card svg {
+    width: 118px;
+}
+
+@keyframes personagem-pular {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-9px); }
+}
+
+@keyframes personagem-piscar {
+    0%, 88%, 100% { transform: scaleY(1); }
+    93% { transform: scaleY(0.15); }
+}
+
+@keyframes personagem-vs-pulso {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.25); }
+}
+
+@keyframes personagem-lingua {
+    0%, 65%, 100% { opacity: 0; transform: scaleY(0.2); }
+    72%, 84% { opacity: 1; transform: scaleY(1); }
+}
+
+@keyframes personagem-balancar {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+}
+
+@keyframes personagem-folha {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-6px) rotate(12deg); }
+}
+
+@keyframes personagem-respirar {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+@keyframes personagem-mira {
+    0%, 100% { opacity: 0.45; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes personagem-visor {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* Jogo da Velha: X e O duelando */
+.personagem-velha .bot-x {
+    animation: personagem-pular 1.7s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-velha .bot-o {
+    animation: personagem-pular 1.7s ease-in-out infinite;
+    animation-delay: 0.35s;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-velha .olho {
+    animation: personagem-piscar 3.6s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-velha .vs-texto {
+    animation: personagem-vs-pulso 1.7s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+/* Frog Quest: sapo pulando com a língua */
+.personagem-frog .corpo-frog {
+    animation: personagem-pular 1.4s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-frog .olho {
+    animation: personagem-piscar 4.2s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-frog .lingua {
+    animation: personagem-lingua 2.8s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: 60px 90px;
+}
+
+/* Amazônia: explorador balançando na floresta */
+.personagem-explorador .corpo-explorador {
+    animation: personagem-balancar 2.6s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: bottom center;
+}
+
+.personagem-explorador .folha {
+    animation: personagem-folha 3s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+/* Phantom FPS: soldado de guarda com mira pulsando */
+.personagem-soldado .corpo-soldado {
+    animation: personagem-respirar 2.2s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: bottom center;
+}
+
+.personagem-soldado .visor {
+    animation: personagem-visor 1.6s ease-in-out infinite;
+}
+
+.personagem-soldado .mira {
+    animation: personagem-mira 1.5s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
 .game-card h3 {
     font-size: 1.25rem;
     margin-bottom: 6px;
