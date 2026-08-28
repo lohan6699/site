@@ -118,8 +118,8 @@
                                     </feMerge>
                                 </filter>
                             </defs>
-                            <ellipse cx="35" cy="90" rx="20" ry="6" fill="rgba(0,0,0,0.25)"/>
-                            <ellipse cx="105" cy="90" rx="20" ry="6" fill="rgba(0,0,0,0.25)"/>
+                            <ellipse class="sombra-x" cx="35" cy="90" rx="20" ry="6" fill="rgba(0,0,0,0.25)"/>
+                            <ellipse class="sombra-o" cx="105" cy="90" rx="20" ry="6" fill="rgba(0,0,0,0.25)"/>
                             <g class="bot-x">
                                 <rect x="16" y="24" width="4" height="10" rx="2" fill="#c4b5fd" class="antena"/>
                                 <circle cx="18" cy="22" r="3" fill="#c4b5fd" class="antena-luz"/>
@@ -151,10 +151,9 @@
 
                 <!-- Frog Quest — agora em destaque -->
                 <div class="game-card destaque" data-jogo="frogquest" data-nota="4.5" data-contagem="3">
-                    <div class="personagem-card personagem-frog" aria-hidden="true">
-                        <div class="personagem-stage personagem-stage-frog">
-                            <img src="frog.png" alt="Sapo ninja do Frog Quest, de headband vermelha e katana" width="113" height="114" loading="lazy">
-                        </div>
+                    <div class="personagem-card personagem-frog personagem-card--sprite" aria-hidden="true">
+                        <div class="personagem-sombra"></div>
+                        <img class="personagem-sprite" src="frog.png" alt="Sapo ninja do Frog Quest, de headband vermelha e espada" width="113" height="114" loading="lazy">
                     </div>
                     <div class="game-criador">por Pedro</div>
                     <h3>Frog Quest</h3>
@@ -167,10 +166,9 @@
 
                 <!-- Amazônia — agora em destaque -->
                 <div class="game-card destaque" data-jogo="amazonia" data-nota="4.5" data-contagem="3">
-                    <div class="personagem-card personagem-explorador" aria-hidden="true">
-                        <div class="personagem-stage personagem-stage-explorador">
-                            <img src="explorador.png" alt="P1, o explorador do jogo Amazônia — Sobrevivência" width="64" height="93" loading="lazy">
-                        </div>
+                    <div class="personagem-card personagem-explorador personagem-card--sprite" aria-hidden="true">
+                        <div class="personagem-sombra"></div>
+                        <img class="personagem-sprite" src="explorador.png" alt="P1, o explorador do jogo Amazônia — Sobrevivência" width="64" height="93" loading="lazy">
                     </div>
                     <div class="game-criador">por Lohan</div>
                     <h3>Amazônia — Sobrevivência</h3>
@@ -205,9 +203,12 @@
                                 <circle cx="60" cy="38" r="21" fill="#111827" stroke="#0b1220" stroke-width="1.5"/>
                                 <rect x="42" y="33" width="36" height="10" rx="5" fill="#374151"/>
                                 <circle class="visor" cx="60" cy="38" r="6.5" fill="url(#gradVisor)"/>
-                                <rect x="76" y="64" width="40" height="8" rx="3" fill="#4b5563"/>
-                                <rect x="106" y="61" width="7" height="18" fill="#374151"/>
-                                <rect x="94" y="60" width="6" height="6" fill="#6b7280"/>
+                                <g class="arma">
+                                    <rect x="76" y="64" width="40" height="8" rx="3" fill="#4b5563"/>
+                                    <rect x="106" y="61" width="7" height="18" fill="#374151"/>
+                                    <rect x="94" y="60" width="6" height="6" fill="#6b7280"/>
+                                    <circle class="tiro" cx="116" cy="68" r="5" fill="#fde68a"/>
+                                </g>
                             </g>
                             <g class="mira" transform="translate(116,70)">
                                 <circle r="9" fill="none" stroke="#ef4444" stroke-width="2"/>
