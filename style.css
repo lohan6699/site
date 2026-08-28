@@ -23,7 +23,6 @@ body {
     position: relative;
 }
 
-/* Esconde visualmente mas mantém acessível para leitores de tela */
 .sr-only {
     position: absolute;
     width: 1px;
@@ -36,7 +35,6 @@ body {
     border: 0;
 }
 
-/* Fundo estrelado sutil, combina com o tema "espaço" do gradiente */
 #estrelas {
     position: fixed;
     inset: 0;
@@ -81,7 +79,6 @@ a, button { font-family: inherit; }
     border-radius: 6px;
 }
 
-/* ========== LOGIN ========== */
 #telaLogin {
     position: fixed;
     inset: 0;
@@ -159,7 +156,6 @@ a, button { font-family: inherit; }
     box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
 }
 
-/* ========== SITE PRINCIPAL ========== */
 #sitePrincipal {
     display: none;
     animation: fadeIn 0.5s ease;
@@ -268,7 +264,6 @@ nav a:hover {
     color: var(--roxo-claro);
 }
 
-/* Hero */
 .hero {
     text-align: center;
     padding: 48px 0 28px;
@@ -323,7 +318,6 @@ nav a:hover {
     box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
 }
 
-/* Progresso */
 .progresso-wrap {
     max-width: 480px;
     margin: 0 auto 8px;
@@ -359,7 +353,6 @@ nav a:hover {
     color: #e0e7ff;
 }
 
-/* Banner de destaque rotativo */
 .destaque-banner {
     max-width: 780px;
     margin: 0 auto 36px;
@@ -450,7 +443,6 @@ nav a:hover {
     }
 }
 
-/* Avaliações */
 .estrelas-media {
     font-size: 0.95rem;
     color: var(--dourado);
@@ -502,7 +494,6 @@ nav a:hover {
     color: var(--dourado);
 }
 
-/* Barra de filtros */
 .barra-filtros {
     display: flex;
     justify-content: space-between;
@@ -566,7 +557,6 @@ nav a:hover {
     display: block;
 }
 
-/* Cards de jogos */
 .games-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -602,7 +592,6 @@ nav a:hover {
     display: block;
 }
 
-/* ========== PERSONAGENS ANIMADOS ========== */
 .personagem-card {
     margin-bottom: 10px;
     display: flex;
@@ -639,21 +628,6 @@ nav a:hover {
     50% { opacity: 1; transform: scale(1.25); }
 }
 
-@keyframes personagem-lingua {
-    0%, 65%, 100% { opacity: 0; transform: scaleY(0.2); }
-    72%, 84% { opacity: 1; transform: scaleY(1); }
-}
-
-@keyframes personagem-balancar {
-    0%, 100% { transform: rotate(-3deg); }
-    50% { transform: rotate(3deg); }
-}
-
-@keyframes personagem-folha {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-6px) rotate(12deg); }
-}
-
 @keyframes personagem-respirar {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-3px); }
@@ -667,6 +641,16 @@ nav a:hover {
 @keyframes personagem-visor {
     0%, 100% { opacity: 0.6; }
     50% { opacity: 1; }
+}
+
+@keyframes personagem-balancar {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+}
+
+@keyframes personagem-antena-blink {
+    0%, 40%, 100% { opacity: 0.45; }
+    45%, 55% { opacity: 1; }
 }
 
 /* Jogo da Velha: X e O duelando */
@@ -695,34 +679,8 @@ nav a:hover {
     transform-origin: center;
 }
 
-/* Frog Quest: sapo pulando com a língua */
-.personagem-frog .corpo-frog {
-    animation: personagem-pular 1.4s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: center;
-}
-
-.personagem-frog .olho {
-    animation: personagem-piscar 4.2s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: center;
-}
-
-.personagem-frog .lingua {
-    animation: personagem-lingua 2.8s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: 60px 90px;
-}
-
-/* Amazônia: explorador balançando na floresta */
-.personagem-explorador .corpo-explorador {
-    animation: personagem-balancar 2.6s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: bottom center;
-}
-
-.personagem-explorador .folha {
-    animation: personagem-folha 3s ease-in-out infinite;
+.personagem-velha .antena-luz {
+    animation: personagem-antena-blink 1.6s ease-in-out infinite;
     transform-box: fill-box;
     transform-origin: center;
 }
@@ -742,6 +700,81 @@ nav a:hover {
     animation: personagem-mira 1.5s ease-in-out infinite;
     transform-box: fill-box;
     transform-origin: center;
+}
+
+.personagem-soldado .capa {
+    animation: personagem-balancar 2.6s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: top center;
+}
+
+/* Palco (moldura) para os personagens que são sprites/imagens reais do jogo */
+.personagem-stage {
+    width: 96px;
+    height: 96px;
+    border-radius: 16px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+    padding: 6px 6px 4px;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08), rgba(0,0,0,0.28) 75%);
+    border: 1px solid rgba(167, 139, 250, 0.35);
+    box-shadow: inset 0 0 14px rgba(0,0,0,0.4), 0 6px 16px rgba(0,0,0,0.25);
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.game-card:hover .personagem-stage {
+    border-color: rgba(167, 139, 250, 0.65);
+}
+
+.personagem-stage img {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    height: 90px;
+    width: auto;
+    max-width: 100%;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+    transform-box: fill-box;
+}
+
+.personagem-stage-explorador {
+    background: radial-gradient(circle at 50% 10%, rgba(52, 211, 153, 0.28), rgba(0,0,0,0.32) 72%);
+    border-color: rgba(52, 211, 153, 0.45);
+}
+
+.personagem-stage-explorador img {
+    animation: personagem-explorar 2.4s ease-in-out infinite;
+}
+
+.personagem-stage-frog {
+    background: radial-gradient(circle at 50% 10%, rgba(239, 68, 68, 0.22), rgba(0,0,0,0.34) 72%);
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+.personagem-stage-frog img {
+    height: 84px;
+    animation: personagem-pular 1.5s ease-in-out infinite;
+}
+
+.destaque-slide .personagem-stage {
+    width: 128px;
+    height: 128px;
+    border-radius: 20px;
+}
+
+.destaque-slide .personagem-stage img {
+    height: 120px;
+}
+
+.destaque-slide .personagem-stage-frog img {
+    height: 112px;
+}
+
+@keyframes personagem-explorar {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-6px) rotate(-2deg); }
 }
 
 .game-card h3 {
@@ -815,12 +848,10 @@ nav a:hover {
     z-index: 2;
 }
 
-/* Quando o card tem selo de "por Fulano", empurra o título pra não colidir com a fita de destaque */
 .destaque .game-criador {
     padding-right: 34px;
 }
 
-/* Ranking */
 .ranking-box {
     display: none;
     background: rgba(0, 0, 0, 0.45);
@@ -883,7 +914,6 @@ nav a:hover {
     white-space: nowrap;
 }
 
-/* Mensagem de pontos */
 .mensagem-pontos {
     position: fixed;
     top: 85px;
@@ -916,7 +946,6 @@ footer {
     z-index: 1;
 }
 
-/* Responsivo */
 @media (max-width: 600px) {
     .header-content {
         flex-direction: column;
