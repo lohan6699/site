@@ -346,7 +346,7 @@ function ordenarJogos(criterio) {
     } else if (criterio === 'contagem') {
         cards.sort((a, b) => parseInt(b.dataset.contagem) - parseInt(a.dataset.contagem));
     } else {
-        cards.sort((a, b) => a.dataset.ordemOriginal - b.dataset.ordemOriginal);
+        cards.sort((a, b) => parseInt(a.dataset.ordemOriginal) - parseInt(b.dataset.ordemOriginal));
     }
 
     cards.forEach(card => grid.appendChild(card));

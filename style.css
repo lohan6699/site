@@ -23,6 +23,19 @@ body {
     position: relative;
 }
 
+/* Esconde visualmente mas mantém acessível para leitores de tela */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* Fundo estrelado sutil, combina com o tema "espaço" do gradiente */
 #estrelas {
     position: fixed;
@@ -657,6 +670,12 @@ nav a:hover {
     font-weight: 700;
     padding: 3px 30px;
     transform: rotate(45deg);
+    z-index: 2;
+}
+
+/* Quando o card tem selo de "por Fulano", empurra o título pra não colidir com a fita de destaque */
+.destaque .game-criador {
+    padding-right: 34px;
 }
 
 /* Ranking */

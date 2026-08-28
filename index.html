@@ -17,7 +17,7 @@
         <div class="login-box">
             <h2>🎮 Portal de Jogos</h2>
             <p>Digite seu nome para começar a jogar</p>
-            <label for="inputNome" class="sr-only" style="position:absolute;left:-9999px;">Seu nome</label>
+            <label for="inputNome" class="sr-only">Seu nome</label>
             <input type="text" id="inputNome" placeholder="Seu nome ou apelido" maxlength="15" autofocus autocomplete="off">
             <div class="erro-login" id="erroLogin" role="alert"></div>
             <button class="btn-entrar" onclick="fazerLogin()">Entrar</button>
@@ -57,7 +57,7 @@
                 <p>Clique nos jogos para ganhar pontos e subir no ranking!</p>
 
                 <div class="progresso-wrap">
-                    <div class="progresso-label" id="progressoLabel">0 de 8 jogos jogados</div>
+                    <div class="progresso-label" id="progressoLabel">0 de 10 jogos jogados</div>
                     <div class="progresso-barra">
                         <div class="progresso-fill" id="progressoFill"></div>
                     </div>
@@ -83,7 +83,7 @@
 
             <div class="barra-filtros">
                 <div class="busca-wrap">
-                    <label for="buscaJogo" class="sr-only" style="position:absolute;left:-9999px;">Buscar jogo</label>
+                    <label for="buscaJogo" class="sr-only">Buscar jogo</label>
                     <input type="search" id="buscaJogo" placeholder="🔍 Buscar jogo..." oninput="filtrarJogos(this.value)">
                 </div>
                 <div class="ordenar-wrap">
@@ -182,7 +182,8 @@
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
-                <div class="game-card" data-jogo="frogquest" data-nota="4.5" data-contagem="3">
+                <!-- Frog Quest — agora em destaque -->
+                <div class="game-card destaque" data-jogo="frogquest" data-nota="4.5" data-contagem="3">
                     <span class="game-icon">🐸</span>
                     <div class="game-criador">por Pedro</div>
                     <h3>Frog Quest</h3>
@@ -193,7 +194,8 @@
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
-                <div class="game-card" data-jogo="amazonia" data-nota="4.5" data-contagem="3">
+                <!-- Amazônia — agora em destaque -->
+                <div class="game-card destaque" data-jogo="amazonia" data-nota="4.5" data-contagem="3">
                     <span class="game-icon">🌳</span>
                     <div class="game-criador">por Lohan</div>
                     <h3>Amazônia — Sobrevivência</h3>
