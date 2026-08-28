@@ -810,6 +810,13 @@ nav a:hover {
     z-index: 1;
 }
 
+/* Usado quando a imagem original (frog.png / explorador.png) não é
+   encontrada: mostra um emoji no lugar, sem a renderização "pixelada"
+   pensada para sprites de verdade. */
+.personagem-sprite.sprite-fallback {
+    image-rendering: auto;
+}
+
 .personagem-explorador .personagem-sprite {
     animation: personagem-explorar-idle 2.4s ease-in-out infinite;
     transform-origin: bottom center;
