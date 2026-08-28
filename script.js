@@ -1,3 +1,45 @@
+// ========== ARMAZENAMENTO SEGURO ==========
+// Em alguns contextos (arquivo aberto direto como file://, modo anônimo,
+// certas configurações de navegador) o localStorage pode lançar um erro
+// e travar o site sem nenhum aviso. Esse wrapper tenta usar o localStorage
+// normalmente, mas se falhar, usa memória temporária, então o site sempre
+// funciona (só não salva entre sessões nesse caso de fallback).
+const memoriaTemporaria = {};
+let avisoStorageMostrado = false;
+
+function avisarStorageIndisponivel() {
+    if (avisoStorageMostrado) return;
+    avisoStorageMostrado = true;
+    console.warn('Aviso: localStorage indisponível neste contexto. Usando armazenamento temporário (não será salvo ao recarregar a página).');
+}
+
+const storage = {
+    getItem(chave) {
+        try {
+            return window.localStorage.getItem(chave);
+        } catch (e) {
+            avisarStorageIndisponivel();
+            return Object.prototype.hasOwnProperty.call(memoriaTemporaria, chave) ? memoriaTemporaria[chave] : null;
+        }
+    },
+    setItem(chave, valor) {
+        try {
+            window.localStorage.setItem(chave, valor);
+        } catch (e) {
+            avisarStorageIndisponivel();
+            memoriaTemporaria[chave] = String(valor);
+        }
+    },
+    removeItem(chave) {
+        try {
+            window.localStorage.removeItem(chave);
+        } catch (e) {
+            avisarStorageIndisponivel();
+            delete memoriaTemporaria[chave];
+        }
+    }
+};
+
 // ========== UTILITÁRIOS ==========
 function escaparHTML(texto) {
     const div = document.createElement('div');
@@ -6,58 +48,55 @@ function escaparHTML(texto) {
 }
 
 function sanitizarNome(nome) {
-    // Remove tags e caracteres de controle, mantém só texto simples
     return nome.replace(/[<>]/g, '').trim().slice(0, 15);
 }
 
-// Converte o nome num identificador seguro para usar em chaves do localStorage,
-// assim cada jogador tem sua própria pontuação/jogos/avaliações salvos.
 function slugNome(nome) {
     return nome
         .toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
         .replace(/[^a-z0-9]+/g, '_')
         .replace(/^_+|_+$/g, '') || 'jogador';
 }
 
 function chaveUsuario(sufixo) {
-    const nome = localStorage.getItem('nomeUsuario') || '';
+    const nome = storage.getItem('nomeUsuario') || '';
     return `portal_${slugNome(nome)}_${sufixo}`;
 }
 
-// Migra dados salvos no formato antigo (global, sem separação por usuário)
-// para o novo formato por usuário, na primeira vez que essa pessoa entrar
-// depois da atualização. Evita que quem já jogou perca os pontos.
 function migrarDadosAntigos() {
-    const jaTemDadosNovos = localStorage.getItem(chaveUsuario('pontuacao')) !== null;
+    const jaTemDadosNovos = storage.getItem(chaveUsuario('pontuacao')) !== null;
     if (jaTemDadosNovos) return;
 
-    const pontosAntigos = localStorage.getItem('pontuacaoPortal');
-    const jogosAntigos = localStorage.getItem('jogosJogados');
-    const avaliacoesAntigas = localStorage.getItem('minhasAvaliacoes');
+    const pontosAntigos = storage.getItem('pontuacaoPortal');
+    const jogosAntigos = storage.getItem('jogosJogados');
+    const avaliacoesAntigas = storage.getItem('minhasAvaliacoes');
 
-    if (pontosAntigos !== null) localStorage.setItem(chaveUsuario('pontuacao'), pontosAntigos);
-    if (jogosAntigos !== null) localStorage.setItem(chaveUsuario('jogosJogados'), jogosAntigos);
-    if (avaliacoesAntigas !== null) localStorage.setItem(chaveUsuario('avaliacoes'), avaliacoesAntigas);
+    if (pontosAntigos !== null) storage.setItem(chaveUsuario('pontuacao'), pontosAntigos);
+    if (jogosAntigos !== null) storage.setItem(chaveUsuario('jogosJogados'), jogosAntigos);
+    if (avaliacoesAntigas !== null) storage.setItem(chaveUsuario('avaliacoes'), avaliacoesAntigas);
 
-    // Limpa as chaves antigas para não vazar dados entre nomes diferentes no futuro
-    localStorage.removeItem('pontuacaoPortal');
-    localStorage.removeItem('jogosJogados');
-    localStorage.removeItem('minhasAvaliacoes');
+    storage.removeItem('pontuacaoPortal');
+    storage.removeItem('jogosJogados');
+    storage.removeItem('minhasAvaliacoes');
 }
 
 const TOTAL_JOGOS = document.querySelectorAll('[data-jogo-btn]').length;
 
-// ========== LOGIN ==========
 const telaLogin = document.getElementById('telaLogin');
 const sitePrincipal = document.getElementById('sitePrincipal');
 const inputNome = document.getElementById('inputNome');
 const erroLogin = document.getElementById('erroLogin');
 
 window.onload = function() {
-    const nomeSalvo = localStorage.getItem('nomeUsuario');
-    if (nomeSalvo) {
-        entrarNoSite(nomeSalvo);
+    try {
+        const nomeSalvo = storage.getItem('nomeUsuario');
+        if (nomeSalvo) {
+            entrarNoSite(nomeSalvo);
+        }
+    } catch (e) {
+        console.error('Erro ao carregar sessão salva:', e);
+        erroLogin.textContent = 'Não foi possível carregar seus dados salvos. Você ainda pode digitar seu nome e jogar normalmente.';
     }
 };
 
@@ -76,8 +115,13 @@ function fazerLogin() {
         inputNome.focus();
         return;
     }
-    localStorage.setItem('nomeUsuario', nome);
-    entrarNoSite(nome);
+    try {
+        storage.setItem('nomeUsuario', nome);
+        entrarNoSite(nome);
+    } catch (e) {
+        console.error('Erro ao entrar no site:', e);
+        erroLogin.textContent = 'Ocorreu um erro ao entrar. Veja o console do navegador (F12) para detalhes.';
+    }
 }
 
 function entrarNoSite(nome) {
@@ -94,33 +138,32 @@ function entrarNoSite(nome) {
 }
 
 function fazerLogout() {
-    if (confirm('Tem certeza que deseja sair? Você pode entrar de novo com o mesmo nome para recuperar sua pontuação.')) {
-        localStorage.removeItem('nomeUsuario');
+    if (confirm('sair?')) {
+        storage.removeItem('nomeUsuario');
         location.reload();
     }
 }
 
 function resetarProgresso() {
-    if (confirm('Isso vai zerar seus pontos, jogos jogados e avaliações. Continuar?')) {
-        localStorage.removeItem(chaveUsuario('pontuacao'));
-        localStorage.removeItem(chaveUsuario('jogosJogados'));
-        localStorage.removeItem(chaveUsuario('avaliacoes'));
+    if (confirm('resetar?')) {
+        storage.removeItem(chaveUsuario('pontuacao'));
+        storage.removeItem(chaveUsuario('jogosJogados'));
+        storage.removeItem(chaveUsuario('avaliacoes'));
         location.reload();
     }
 }
 
-// ========== PONTUAÇÃO ==========
 let pontuacao = 0;
 let jogosJogados = [];
 
 function carregarPontuacao() {
-    pontuacao = parseInt(localStorage.getItem(chaveUsuario('pontuacao'))) || 0;
+    pontuacao = parseInt(storage.getItem(chaveUsuario('pontuacao'))) || 0;
     document.getElementById('pontuacao').textContent = pontuacao;
 }
 
 function carregarJogosJogados() {
     try {
-        jogosJogados = JSON.parse(localStorage.getItem(chaveUsuario('jogosJogados'))) || [];
+        jogosJogados = JSON.parse(storage.getItem(chaveUsuario('jogosJogados'))) || [];
     } catch (e) {
         jogosJogados = [];
     }
@@ -146,17 +189,16 @@ function atualizarProgresso() {
 }
 
 function adicionarPontos(id, card) {
-    // Só concede pontos na primeira vez que o jogo é aberto
     if (jogosJogados.includes(id)) return;
 
     jogosJogados.push(id);
-    localStorage.setItem(chaveUsuario('jogosJogados'), JSON.stringify(jogosJogados));
+    storage.setItem(chaveUsuario('jogosJogados'), JSON.stringify(jogosJogados));
     marcarComoJogado(card);
     atualizarProgresso();
 
     const pontosAntigos = pontuacao;
     pontuacao += 15;
-    localStorage.setItem(chaveUsuario('pontuacao'), pontuacao);
+    storage.setItem(chaveUsuario('pontuacao'), pontuacao);
 
     animarNumero(pontosAntigos, pontuacao);
 
@@ -192,11 +234,9 @@ function animarNumero(inicio, fim) {
     requestAnimationFrame(atualizar);
 }
 
-// ========== RANKING ==========
 function atualizarRanking() {
-    const nomeAtual = localStorage.getItem('nomeUsuario') || 'Você';
+    const nomeAtual = storage.getItem('nomeUsuario') || 'Você';
 
-    // Jogadores fictícios, para dar contexto de ranking
     const fakes = [
         { nome: "SpaceMaster", pontos: 320 },
         { nome: "NinjaVeloz", pontos: 245 },
@@ -227,7 +267,7 @@ function atualizarRanking() {
 
         const spanNome = document.createElement('span');
         spanNome.className = 'ranking-nome';
-        spanNome.textContent = jogador.nome; // textContent evita XSS
+        spanNome.textContent = jogador.nome;
 
         const spanPontos = document.createElement('span');
         spanPontos.textContent = `${jogador.pontos} pts`;
@@ -245,10 +285,9 @@ function mostrarRanking() {
     }
 }
 
-// ========== AVALIAÇÕES ==========
 function carregarMinhasAvaliacoes() {
     try {
-        return JSON.parse(localStorage.getItem(chaveUsuario('avaliacoes'))) || {};
+        return JSON.parse(storage.getItem(chaveUsuario('avaliacoes'))) || {};
     } catch (e) {
         return {};
     }
@@ -266,13 +305,11 @@ function renderizarAvaliacoes() {
         const nota = parseFloat(card.dataset.nota);
         const contagem = card.dataset.contagem;
 
-        // Nota média (editorial, exibida como referência de popularidade)
         const mediaEl = card.querySelector('.estrelas-media');
         if (mediaEl) {
             mediaEl.innerHTML = `${estrelasTexto(nota)} <span class="nota-num">${nota.toFixed(1)}</span> <span class="contagem">(${contagem})</span>`;
         }
 
-        // Sua nota (interativa, salva localmente)
         const jogoId = card.dataset.jogo;
         const container = card.querySelector('[data-jogo-avaliar]');
         if (container) {
@@ -298,14 +335,14 @@ function avaliarJogo(jogoId, valor, card) {
     const minhas = carregarMinhasAvaliacoes();
     const primeiraVez = !minhas[jogoId];
     minhas[jogoId] = valor;
-    localStorage.setItem(chaveUsuario('avaliacoes'), JSON.stringify(minhas));
+    storage.setItem(chaveUsuario('avaliacoes'), JSON.stringify(minhas));
 
     renderizarAvaliacoes();
 
     if (primeiraVez) {
         const pontosAntigos = pontuacao;
         pontuacao += 5;
-        localStorage.setItem(chaveUsuario('pontuacao'), pontuacao);
+        storage.setItem(chaveUsuario('pontuacao'), pontuacao);
         animarNumero(pontosAntigos, pontuacao);
 
         const msg = document.getElementById('mensagemPontos');
@@ -319,7 +356,6 @@ function avaliarJogo(jogoId, valor, card) {
     }
 }
 
-// ========== BUSCA ==========
 function filtrarJogos(termo) {
     const busca = termo.trim().toLowerCase();
     const cards = document.querySelectorAll('#gamesGrid .game-card');
@@ -336,7 +372,6 @@ function filtrarJogos(termo) {
     document.getElementById('semResultados').classList.toggle('mostrar', !algumVisivel);
 }
 
-// ========== ORDENAÇÃO ==========
 function ordenarJogos(criterio) {
     const grid = document.getElementById('gamesGrid');
     const cards = Array.from(grid.querySelectorAll('.game-card'));
@@ -352,12 +387,10 @@ function ordenarJogos(criterio) {
     cards.forEach(card => grid.appendChild(card));
 }
 
-// Guarda a ordem original dos cards para a opção "Padrão"
 document.querySelectorAll('#gamesGrid .game-card').forEach((card, index) => {
     card.dataset.ordemOriginal = index;
 });
 
-// ========== BANNER DE DESTAQUE ROTATIVO ==========
 let destaqueIndex = 0;
 let destaqueIntervalo = null;
 const cardsDestaque = Array.from(document.querySelectorAll('.game-card.destaque'));

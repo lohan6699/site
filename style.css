@@ -618,8 +618,6 @@ nav a:hover {
     50% { transform: translateY(-9px); }
 }
 
-/* Salto com "squash & stretch": achata antes/depois do pulo e alonga no ar,
-   como em animação de jogo de verdade, em vez de um bounce robótico. */
 @keyframes personagem-pular-squash {
     0%   { transform: translateY(0)     scale(1, 1); }
     10%  { transform: translateY(2px)   scale(1.1, 0.88); }
@@ -637,7 +635,6 @@ nav a:hover {
     100% { transform: translateY(0)    scale(1, 1); }
 }
 
-/* Sombra no chão que encolhe e clareia quando o personagem sobe no salto */
 @keyframes personagem-sombra-pulo {
     0%, 100% { transform: scale(1); opacity: 0.5; }
     45%, 55% { transform: scale(0.55); opacity: 0.22; }
@@ -653,7 +650,6 @@ nav a:hover {
     50% { transform: translateY(-5px) rotate(-3deg); }
 }
 
-/* Mira do Phantom FPS varrendo o alvo em vez de só pulsar no lugar */
 @keyframes personagem-mira-scan {
     0%   { transform: translate(0, 0) scale(0.9); opacity: 0.5; }
     25%  { transform: translate(5px, -3px) scale(1.05); opacity: 0.9; }
@@ -662,7 +658,6 @@ nav a:hover {
     100% { transform: translate(0, 0) scale(0.9); opacity: 0.5; }
 }
 
-/* Recuo da arma e clarão do disparo, disparados periodicamente */
 @keyframes personagem-recuo {
     0%, 78%, 100% { transform: translateX(0); }
     80% { transform: translateX(-2.5px); }
@@ -710,7 +705,6 @@ nav a:hover {
     45%, 55% { opacity: 1; }
 }
 
-/* Jogo da Velha: X e O duelando */
 .personagem-velha .bot-x {
     animation: personagem-pular-bot 1.7s cubic-bezier(.45,0,.55,1) infinite;
     transform-box: fill-box;
@@ -753,7 +747,6 @@ nav a:hover {
     transform-origin: center;
 }
 
-/* Phantom FPS: soldado de guarda com mira pulsando */
 .personagem-soldado .corpo-soldado {
     animation: personagem-respirar 2.2s ease-in-out infinite;
     transform-box: fill-box;
@@ -788,8 +781,6 @@ nav a:hover {
     transform-origin: center;
 }
 
-/* Sprites reais do jogo (Amazônia e Frog Quest): sem fundo, flutuando
-   direto sobre o card, com sombra própria no "chão" — igual aos bots SVG. */
 .personagem-card--sprite {
     position: relative;
     align-items: flex-end;
