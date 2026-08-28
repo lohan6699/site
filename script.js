@@ -1,1047 +1,459 @@
-:root {
-    --roxo: #7c3aed;
-    --roxo-claro: #a78bfa;
-    --verde: #34d399;
-    --vermelho: #ef4444;
-    --dourado: #fbbf24;
-    --fundo: #0f0c29;
-    --raio: 16px;
+// ========== UTILITÁRIOS ==========
+function escaparHTML(texto) {
+    const div = document.createElement('div');
+    div.textContent = texto;
+    return div.innerHTML;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+function sanitizarNome(nome) {
+    // Remove tags e caracteres de controle, mantém só texto simples
+    return nome.replace(/[<>]/g, '').trim().slice(0, 15);
 }
 
-body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    color: #fff;
-    min-height: 100vh;
-    line-height: 1.5;
-    position: relative;
+// Converte o nome num identificador seguro para usar em chaves do localStorage,
+// assim cada jogador tem sua própria pontuação/jogos/avaliações salvos.
+function slugNome(nome) {
+    return nome
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '') || 'jogador';
 }
 
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+function chaveUsuario(sufixo) {
+    const nome = localStorage.getItem('nomeUsuario') || '';
+    return `portal_${slugNome(nome)}_${sufixo}`;
 }
 
-#estrelas {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background-image:
-        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,0.9), transparent),
-        radial-gradient(1.5px 1.5px at 80% 10%, rgba(255,255,255,0.7), transparent),
-        radial-gradient(1.5px 1.5px at 45% 35%, rgba(255,255,255,0.6), transparent),
-        radial-gradient(2px 2px at 65% 65%, rgba(255,255,255,0.8), transparent),
-        radial-gradient(1px 1px at 25% 80%, rgba(255,255,255,0.6), transparent),
-        radial-gradient(1.5px 1.5px at 90% 85%, rgba(255,255,255,0.7), transparent),
-        radial-gradient(1px 1px at 55% 5%, rgba(255,255,255,0.5), transparent),
-        radial-gradient(2px 2px at 15% 60%, rgba(255,255,255,0.6), transparent);
-    background-size: 100% 100%;
-    animation: cintilar 4s ease-in-out infinite alternate;
+// Migra dados salvos no formato antigo (global, sem separação por usuário)
+// para o novo formato por usuário, na primeira vez que essa pessoa entrar
+// depois da atualização. Evita que quem já jogou perca os pontos.
+function migrarDadosAntigos() {
+    const jaTemDadosNovos = localStorage.getItem(chaveUsuario('pontuacao')) !== null;
+    if (jaTemDadosNovos) return;
+
+    const pontosAntigos = localStorage.getItem('pontuacaoPortal');
+    const jogosAntigos = localStorage.getItem('jogosJogados');
+    const avaliacoesAntigas = localStorage.getItem('minhasAvaliacoes');
+
+    if (pontosAntigos !== null) localStorage.setItem(chaveUsuario('pontuacao'), pontosAntigos);
+    if (jogosAntigos !== null) localStorage.setItem(chaveUsuario('jogosJogados'), jogosAntigos);
+    if (avaliacoesAntigas !== null) localStorage.setItem(chaveUsuario('avaliacoes'), avaliacoesAntigas);
+
+    // Limpa as chaves antigas para não vazar dados entre nomes diferentes no futuro
+    localStorage.removeItem('pontuacaoPortal');
+    localStorage.removeItem('jogosJogados');
+    localStorage.removeItem('minhasAvaliacoes');
 }
 
-@keyframes cintilar {
-    from { opacity: 0.5; }
-    to { opacity: 1; }
-}
+const TOTAL_JOGOS = document.querySelectorAll('[data-jogo-btn]').length;
 
-@media (prefers-reduced-motion: reduce) {
-    #estrelas { animation: none; opacity: 0.75; }
-    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-}
+// ========== LOGIN ==========
+const telaLogin = document.getElementById('telaLogin');
+const sitePrincipal = document.getElementById('sitePrincipal');
+const inputNome = document.getElementById('inputNome');
+const erroLogin = document.getElementById('erroLogin');
 
-.container {
-    width: 92%;
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
-}
-
-a, button { font-family: inherit; }
-
-:focus-visible {
-    outline: 2px solid var(--verde);
-    outline-offset: 3px;
-    border-radius: 6px;
-}
-
-#telaLogin {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
-
-.login-box {
-    background: rgba(0, 0, 0, 0.55);
-    border: 1px solid rgba(167, 139, 250, 0.4);
-    border-radius: 24px;
-    padding: 42px 36px;
-    width: 90%;
-    max-width: 390px;
-    text-align: center;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.login-box h2 {
-    font-size: 1.9rem;
-    margin-bottom: 8px;
-    color: #c4b5fd;
-}
-
-.login-box p {
-    opacity: 0.8;
-    margin-bottom: 26px;
-    font-size: 0.95rem;
-}
-
-.login-box input {
-    width: 100%;
-    padding: 15px 18px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.08);
-    color: white;
-    font-size: 1.05rem;
-    margin-bottom: 8px;
-    outline: none;
-    transition: border-color 0.25s;
-}
-
-.login-box input:focus {
-    border-color: var(--roxo-claro);
-}
-
-.erro-login {
-    color: #fca5a5;
-    font-size: 0.85rem;
-    min-height: 20px;
-    margin-bottom: 10px;
-    text-align: left;
-}
-
-.btn-entrar {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 14px;
-    background: linear-gradient(90deg, #7c3aed, #4f46e5);
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-entrar:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
-}
-
-#sitePrincipal {
-    display: none;
-    animation: fadeIn 0.5s ease;
-    position: relative;
-    z-index: 1;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-header {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 14px 0;
-    position: sticky;
-    top: 0;
-    backdrop-filter: blur(14px);
-    z-index: 100;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-.logo {
-    font-size: 1.55rem;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.score-box {
-    background: rgba(167, 139, 250, 0.2);
-    border: 1px solid var(--roxo-claro);
-    padding: 7px 16px;
-    border-radius: 50px;
-    font-weight: 700;
-    font-size: 0.95rem;
-}
-
-.score-box span {
-    color: var(--verde);
-    transition: color 0.3s;
-}
-
-.nome-usuario {
-    background: rgba(52, 211, 153, 0.15);
-    border: 1px solid var(--verde);
-    padding: 7px 16px;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    max-width: 160px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.btn-sair, .btn-resetar {
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid var(--vermelho);
-    color: #fca5a5;
-    padding: 7px 14px;
-    border-radius: 50px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.2s;
-}
-
-.btn-sair:hover, .btn-resetar:hover {
-    background: rgba(239, 68, 68, 0.3);
-}
-
-.btn-resetar {
-    background: rgba(251, 191, 36, 0.12);
-    border: 1px solid var(--dourado);
-    color: #fde68a;
-}
-
-.btn-resetar:hover {
-    background: rgba(251, 191, 36, 0.28);
-}
-
-nav a {
-    color: #e0e7ff;
-    text-decoration: none;
-    margin-left: 18px;
-    font-weight: 500;
-    font-size: 0.95rem;
-    transition: color 0.2s;
-}
-
-nav a:hover {
-    color: var(--roxo-claro);
-}
-
-.hero {
-    text-align: center;
-    padding: 48px 0 28px;
-}
-
-.hero h1 {
-    font-size: clamp(1.9rem, 5vw, 2.7rem);
-    margin-bottom: 10px;
-    background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.hero p {
-    opacity: 0.85;
-    font-size: 1.05rem;
-}
-
-.botoes-hero {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 22px;
-}
-
-.btn-principal {
-    display: inline-block;
-    background: linear-gradient(90deg, #7c3aed, #4f46e5);
-    color: white;
-    padding: 13px 28px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    font-size: 1rem;
-}
-
-.btn-principal:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.35);
-}
-
-.btn-ranking {
-    background: linear-gradient(90deg, #059669, #10b981);
-}
-
-.btn-ranking:hover {
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
-}
-
-.progresso-wrap {
-    max-width: 480px;
-    margin: 0 auto 8px;
-    text-align: center;
-}
-
-.progresso-label {
-    font-size: 0.85rem;
-    opacity: 0.75;
-    margin-bottom: 6px;
-}
-
-.progresso-barra {
-    width: 100%;
-    height: 8px;
-    border-radius: 50px;
-    background: rgba(255,255,255,0.1);
-    overflow: hidden;
-}
-
-.progresso-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #a78bfa, #34d399);
-    border-radius: 50px;
-    transition: width 0.5s ease;
-    width: 0%;
-}
-
-.section-title {
-    text-align: center;
-    font-size: 1.7rem;
-    margin: 10px 0 28px;
-    color: #e0e7ff;
-}
-
-.destaque-banner {
-    max-width: 780px;
-    margin: 0 auto 36px;
-    position: relative;
-}
-
-.destaque-slide {
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.28), rgba(16, 185, 129, 0.14));
-    border: 1px solid rgba(167, 139, 250, 0.45);
-    border-radius: 22px;
-    padding: 30px 26px;
-    display: flex;
-    align-items: center;
-    gap: 22px;
-    backdrop-filter: blur(10px);
-    animation: fadeIn 0.4s ease;
-}
-
-.destaque-slide .game-icon {
-    font-size: 3.6rem;
-    margin: 0;
-    flex-shrink: 0;
-}
-
-.destaque-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.destaque-eyebrow {
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    color: var(--roxo-claro);
-    text-transform: uppercase;
-    margin-bottom: 4px;
-}
-
-.destaque-titulo {
-    font-size: 1.4rem;
-    color: #fff;
-    margin-bottom: 4px;
-}
-
-.destaque-desc {
-    font-size: 0.92rem;
-    opacity: 0.85;
-    margin-bottom: 12px;
-}
-
-.destaque-rodape {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-
-.destaque-dots {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 14px;
-}
-
-.dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.25);
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    transition: background 0.2s, transform 0.2s;
-}
-
-.dot.ativo {
-    background: var(--roxo-claro);
-    transform: scale(1.3);
-}
-
-@media (max-width: 560px) {
-    .destaque-slide {
-        flex-direction: column;
-        text-align: center;
+window.onload = function() {
+    const nomeSalvo = localStorage.getItem('nomeUsuario');
+    if (nomeSalvo) {
+        entrarNoSite(nomeSalvo);
     }
-    .destaque-rodape {
-        justify-content: center;
+};
+
+inputNome.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') fazerLogin();
+});
+
+inputNome.addEventListener('input', function() {
+    erroLogin.textContent = '';
+});
+
+function fazerLogin() {
+    const nome = sanitizarNome(inputNome.value);
+    if (nome.length < 2) {
+        erroLogin.textContent = 'Digite um nome com pelo menos 2 letras!';
+        inputNome.focus();
+        return;
+    }
+    localStorage.setItem('nomeUsuario', nome);
+    entrarNoSite(nome);
+}
+
+function entrarNoSite(nome) {
+    telaLogin.style.display = 'none';
+    sitePrincipal.style.display = 'block';
+    document.getElementById('nomeExibido').textContent = nome;
+    document.getElementById('nomeHero').textContent = nome;
+    document.getElementById('nomeExibido').title = nome;
+    migrarDadosAntigos();
+    carregarPontuacao();
+    carregarJogosJogados();
+    renderizarAvaliacoes();
+    iniciarDestaqueBanner();
+}
+
+function fazerLogout() {
+    if (confirm('Tem certeza que deseja sair? Você pode entrar de novo com o mesmo nome para recuperar sua pontuação.')) {
+        localStorage.removeItem('nomeUsuario');
+        location.reload();
     }
 }
 
-.estrelas-media {
-    font-size: 0.95rem;
-    color: var(--dourado);
-    letter-spacing: 1px;
-}
-
-.estrelas-media .nota-num {
-    color: #e0e7ff;
-    font-weight: 700;
-    margin-left: 4px;
-}
-
-.estrelas-media .contagem {
-    color: #e0e7ff;
-    opacity: 0.6;
-    font-size: 0.8rem;
-}
-
-.sua-nota {
-    margin-top: 10px;
-    font-size: 0.78rem;
-    opacity: 0.85;
-}
-
-.estrelas-interativas {
-    display: inline-flex;
-    gap: 2px;
-    vertical-align: middle;
-    margin-left: 4px;
-}
-
-.estrela {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.15rem;
-    color: rgba(255,255,255,0.3);
-    padding: 2px;
-    line-height: 1;
-    transition: color 0.15s, transform 0.15s;
-}
-
-.estrela:hover,
-.estrela:focus-visible {
-    transform: scale(1.15);
-}
-
-.estrela.preenchida {
-    color: var(--dourado);
-}
-
-.barra-filtros {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    max-width: 1200px;
-    margin: -14px auto 22px;
-    font-size: 0.9rem;
-    opacity: 0.9;
-    flex-wrap: wrap;
-}
-
-.barra-filtros .busca-wrap {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex: 1;
-    min-width: 180px;
-    max-width: 260px;
-}
-
-.barra-filtros input[type="search"] {
-    width: 100%;
-    background: rgba(255,255,255,0.08);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 10px;
-    padding: 6px 10px;
-    font-size: 0.9rem;
-}
-
-.barra-filtros input[type="search"]:focus-visible,
-.barra-filtros select:focus-visible {
-    outline: 2px solid var(--verde);
-}
-
-.barra-filtros .ordenar-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.barra-filtros select {
-    background: rgba(255,255,255,0.08);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 10px;
-    padding: 6px 10px;
-    font-size: 0.9rem;
-}
-
-.sem-resultados {
-    display: none;
-    text-align: center;
-    opacity: 0.7;
-    padding: 30px 0;
-    font-size: 0.95rem;
-}
-
-.sem-resultados.mostrar {
-    display: block;
-}
-
-.games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 22px;
-    padding-bottom: 55px;
-}
-
-.game-card {
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 18px;
-    padding: 24px 18px;
-    text-align: center;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.game-card.escondido {
-    display: none;
-}
-
-.game-card:hover {
-    transform: translateY(-8px);
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(167, 139, 250, 0.55);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-}
-
-.game-icon {
-    font-size: 3.1rem;
-    margin-bottom: 12px;
-    display: block;
-}
-
-.personagem-card {
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: center;
-}
-
-.personagem-card svg {
-    width: 92px;
-    height: auto;
-    overflow: visible;
-}
-
-.destaque-slide .personagem-card {
-    margin-bottom: 0;
-    flex-shrink: 0;
-}
-
-.destaque-slide .personagem-card svg {
-    width: 118px;
-}
-
-@keyframes personagem-pular {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-9px); }
-}
-
-/* Salto com "squash & stretch": achata antes/depois do pulo e alonga no ar,
-   como em animação de jogo de verdade, em vez de um bounce robótico. */
-@keyframes personagem-pular-squash {
-    0%   { transform: translateY(0)     scale(1, 1); }
-    10%  { transform: translateY(2px)   scale(1.1, 0.88); }
-    45%  { transform: translateY(-16px) scale(0.94, 1.08); }
-    55%  { transform: translateY(-16px) scale(0.94, 1.08); }
-    88%  { transform: translateY(2px)   scale(1.1, 0.88); }
-    100% { transform: translateY(0)     scale(1, 1); }
-}
-
-@keyframes personagem-pular-bot {
-    0%   { transform: translateY(0)    scale(1, 1); }
-    12%  { transform: translateY(1px)  scale(1.07, 0.93); }
-    50%  { transform: translateY(-9px) scale(0.96, 1.05); }
-    88%  { transform: translateY(1px)  scale(1.07, 0.93); }
-    100% { transform: translateY(0)    scale(1, 1); }
-}
-
-/* Sombra no chão que encolhe e clareia quando o personagem sobe no salto */
-@keyframes personagem-sombra-pulo {
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    45%, 55% { transform: scale(0.55); opacity: 0.22; }
-}
-
-@keyframes personagem-sombra-idle {
-    0%, 100% { transform: scale(1); opacity: 0.42; }
-    50% { transform: scale(0.82); opacity: 0.26; }
-}
-
-@keyframes personagem-explorar-idle {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-5px) rotate(-3deg); }
-}
-
-/* Mira do Phantom FPS varrendo o alvo em vez de só pulsar no lugar */
-@keyframes personagem-mira-scan {
-    0%   { transform: translate(0, 0) scale(0.9); opacity: 0.5; }
-    25%  { transform: translate(5px, -3px) scale(1.05); opacity: 0.9; }
-    50%  { transform: translate(0, -6px) scale(1.18); opacity: 1; }
-    75%  { transform: translate(-5px, -3px) scale(1.05); opacity: 0.9; }
-    100% { transform: translate(0, 0) scale(0.9); opacity: 0.5; }
-}
-
-/* Recuo da arma e clarão do disparo, disparados periodicamente */
-@keyframes personagem-recuo {
-    0%, 78%, 100% { transform: translateX(0); }
-    80% { transform: translateX(-2.5px); }
-    84% { transform: translateX(1px); }
-    89% { transform: translateX(0); }
-}
-
-@keyframes personagem-tiro {
-    0%, 78%, 86%, 100% { opacity: 0; transform: scale(0.4); }
-    80%, 82% { opacity: 1; transform: scale(1.3); }
-}
-
-@keyframes personagem-piscar {
-    0%, 88%, 100% { transform: scaleY(1); }
-    93% { transform: scaleY(0.15); }
-}
-
-@keyframes personagem-vs-pulso {
-    0%, 100% { opacity: 0.7; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.25); }
-}
-
-@keyframes personagem-respirar {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
-}
-
-@keyframes personagem-mira {
-    0%, 100% { opacity: 0.45; transform: scale(0.85); }
-    50% { opacity: 1; transform: scale(1.15); }
-}
-
-@keyframes personagem-visor {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
-}
-
-@keyframes personagem-balancar {
-    0%, 100% { transform: rotate(-2deg); }
-    50% { transform: rotate(2deg); }
-}
-
-@keyframes personagem-antena-blink {
-    0%, 40%, 100% { opacity: 0.45; }
-    45%, 55% { opacity: 1; }
-}
-
-/* Jogo da Velha: X e O duelando */
-.personagem-velha .bot-x {
-    animation: personagem-pular-bot 1.7s cubic-bezier(.45,0,.55,1) infinite;
-    transform-box: fill-box;
-    transform-origin: bottom center;
-}
-
-.personagem-velha .bot-o {
-    animation: personagem-pular-bot 1.7s cubic-bezier(.45,0,.55,1) infinite;
-    animation-delay: 0.35s;
-    transform-box: fill-box;
-    transform-origin: bottom center;
-}
-
-.personagem-velha .sombra-x,
-.personagem-velha .sombra-o {
-    animation: personagem-sombra-pulo 1.7s cubic-bezier(.45,0,.55,1) infinite;
-    transform-box: fill-box;
-    transform-origin: center;
-}
-
-.personagem-velha .sombra-o {
-    animation-delay: 0.35s;
-}
-
-.personagem-velha .olho {
-    animation: personagem-piscar 3.6s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: center;
-}
-
-.personagem-velha .vs-texto {
-    animation: personagem-vs-pulso 1.7s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: center;
-}
-
-.personagem-velha .antena-luz {
-    animation: personagem-antena-blink 1.6s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: center;
-}
-
-/* Phantom FPS: soldado de guarda com mira pulsando */
-.personagem-soldado .corpo-soldado {
-    animation: personagem-respirar 2.2s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: bottom center;
-}
-
-.personagem-soldado .visor {
-    animation: personagem-visor 1.6s ease-in-out infinite;
-}
-
-.personagem-soldado .mira {
-    animation: personagem-mira-scan 2.4s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: center;
-}
-
-.personagem-soldado .capa {
-    animation: personagem-balancar 2.6s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: top center;
-}
-
-.personagem-soldado .arma {
-    animation: personagem-recuo 3.2s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: left center;
-}
-
-.personagem-soldado .tiro {
-    animation: personagem-tiro 3.2s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: center;
-}
-
-/* Sprites reais do jogo (Amazônia e Frog Quest): sem fundo, flutuando
-   direto sobre o card, com sombra própria no "chão" — igual aos bots SVG. */
-.personagem-card--sprite {
-    position: relative;
-    align-items: flex-end;
-    min-height: 94px;
-    padding-bottom: 6px;
-}
-
-.personagem-sprite {
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    height: 82px;
-    width: auto;
-    max-width: 100%;
-    position: relative;
-    z-index: 2;
-    filter: drop-shadow(0 6px 5px rgba(0,0,0,0.45));
-}
-
-.personagem-sombra {
-    position: absolute;
-    bottom: 2px;
-    width: 56px;
-    height: 13px;
-    border-radius: 50%;
-    background: radial-gradient(ellipse at center, rgba(0,0,0,0.5), rgba(0,0,0,0) 72%);
-    z-index: 1;
-}
-
-.personagem-explorador .personagem-sprite {
-    animation: personagem-explorar-idle 2.4s ease-in-out infinite;
-    transform-origin: bottom center;
-}
-
-.personagem-explorador .personagem-sombra {
-    animation: personagem-sombra-idle 2.4s ease-in-out infinite;
-}
-
-.personagem-frog .personagem-sprite {
-    height: 78px;
-    animation: personagem-pular-squash 1.5s cubic-bezier(.45,0,.55,1) infinite;
-    transform-origin: bottom center;
-}
-
-.personagem-frog .personagem-sombra {
-    animation: personagem-sombra-pulo 1.5s cubic-bezier(.45,0,.55,1) infinite;
-}
-
-.destaque-slide .personagem-sprite {
-    height: 108px;
-}
-
-.destaque-slide .personagem-frog .personagem-sprite {
-    height: 102px;
-}
-
-.destaque-slide .personagem-sombra {
-    width: 72px;
-    height: 16px;
-}
-
-.game-card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 6px;
-    color: #c4b5fd;
-}
-
-.game-criador {
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: var(--verde);
-    margin-bottom: 4px;
-}
-
-.game-card p {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    margin-bottom: 16px;
-    min-height: 42px;
-}
-
-.btn-jogar {
-    display: inline-block;
-    background: var(--roxo);
-    color: white;
-    padding: 11px 24px;
-    border-radius: 40px;
-    text-decoration: none;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-}
-
-.btn-jogar:hover {
-    background: #6d28d9;
-    transform: scale(1.05);
-}
-
-.selo-jogado {
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--verde);
-    background: rgba(52, 211, 153, 0.15);
-    border: 1px solid rgba(52, 211, 153, 0.5);
-    padding: 4px 12px;
-    border-radius: 50px;
-}
-
-.destaque {
-    border: 2px solid var(--roxo-claro);
-    background: rgba(167, 139, 250, 0.12);
-}
-
-.destaque::before {
-    content: "★ DESTAQUE";
-    position: absolute;
-    top: 12px;
-    right: -28px;
-    background: var(--roxo);
-    color: white;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 3px 30px;
-    transform: rotate(45deg);
-    z-index: 2;
-}
-
-.destaque .game-criador {
-    padding-right: 34px;
-}
-
-.ranking-box {
-    display: none;
-    background: rgba(0, 0, 0, 0.45);
-    border: 1px solid rgba(167, 139, 250, 0.4);
-    border-radius: 20px;
-    padding: 26px;
-    margin-bottom: 40px;
-    max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
-    backdrop-filter: blur(8px);
-}
-
-.ranking-box.mostrar {
-    display: block;
-    animation: fadeIn 0.35s ease;
-}
-
-.ranking-box h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #c4b5fd;
-    font-size: 1.4rem;
-}
-
-.ranking-lista {
-    list-style: none;
-}
-
-.ranking-lista li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    margin-bottom: 8px;
-    background: rgba(255, 255, 255, 0.07);
-    border-radius: 12px;
-    transition: background 0.2s;
-}
-
-.ranking-lista li.voce {
-    background: rgba(52, 211, 153, 0.2);
-    border: 1px solid var(--verde);
-    font-weight: 700;
-}
-
-.ranking-pos {
-    font-weight: 800;
-    color: #a78bfa;
-    width: 40px;
-    text-align: center;
-}
-
-.ranking-nome {
-    flex: 1;
-    text-align: left;
-    padding-left: 8px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.mensagem-pontos {
-    position: fixed;
-    top: 85px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-20px);
-    background: linear-gradient(90deg, #34d399, #10b981);
-    color: #064e3b;
-    padding: 12px 28px;
-    border-radius: 50px;
-    font-weight: 700;
-    z-index: 999;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.35s ease;
-    box-shadow: 0 8px 25px rgba(52, 211, 153, 0.4);
-}
-
-.mensagem-pontos.mostrar {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-footer {
-    background: rgba(0, 0, 0, 0.4);
-    text-align: center;
-    padding: 22px 0;
-    font-size: 0.9rem;
-    opacity: 0.85;
-    position: relative;
-    z-index: 1;
-}
-
-@media (max-width: 600px) {
-    .header-content {
-        flex-direction: column;
-        gap: 10px;
+function resetarProgresso() {
+    if (confirm('Isso vai zerar seus pontos, jogos jogados e avaliações. Continuar?')) {
+        localStorage.removeItem(chaveUsuario('pontuacao'));
+        localStorage.removeItem(chaveUsuario('jogosJogados'));
+        localStorage.removeItem(chaveUsuario('avaliacoes'));
+        location.reload();
     }
-    nav {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        justify-content: center;
+}
+
+// ========== PONTUAÇÃO ==========
+let pontuacao = 0;
+let jogosJogados = [];
+
+function carregarPontuacao() {
+    pontuacao = parseInt(localStorage.getItem(chaveUsuario('pontuacao'))) || 0;
+    document.getElementById('pontuacao').textContent = pontuacao;
+}
+
+function carregarJogosJogados() {
+    try {
+        jogosJogados = JSON.parse(localStorage.getItem(chaveUsuario('jogosJogados'))) || [];
+    } catch (e) {
+        jogosJogados = [];
     }
-    nav a {
-        margin-left: 0;
+    document.querySelectorAll('.game-card').forEach(card => {
+        const id = card.dataset.jogo;
+        if (jogosJogados.includes(id)) {
+            marcarComoJogado(card);
+        }
+    });
+    atualizarProgresso();
+}
+
+function marcarComoJogado(card) {
+    const selo = card.querySelector('.selo-jogado');
+    if (selo) selo.hidden = false;
+}
+
+function atualizarProgresso() {
+    const total = TOTAL_JOGOS;
+    const jogados = jogosJogados.length;
+    document.getElementById('progressoLabel').textContent = `${jogados} de ${total} jogos jogados`;
+    document.getElementById('progressoFill').style.width = `${(jogados / total) * 100}%`;
+}
+
+function adicionarPontos(id, card) {
+    // Só concede pontos na primeira vez que o jogo é aberto
+    if (jogosJogados.includes(id)) return;
+
+    jogosJogados.push(id);
+    localStorage.setItem(chaveUsuario('jogosJogados'), JSON.stringify(jogosJogados));
+    marcarComoJogado(card);
+    atualizarProgresso();
+
+    const pontosAntigos = pontuacao;
+    pontuacao += 15;
+    localStorage.setItem(chaveUsuario('pontuacao'), pontuacao);
+
+    animarNumero(pontosAntigos, pontuacao);
+
+    const msg = document.getElementById('mensagemPontos');
+    msg.textContent = '+15 pontos! 🎉';
+    msg.classList.add('mostrar');
+    setTimeout(() => msg.classList.remove('mostrar'), 1400);
+
+    if (document.getElementById('rankingBox').classList.contains('mostrar')) {
+        atualizarRanking();
     }
-    .destaque::before {
-        font-size: 0.65rem;
-        right: -32px;
+}
+
+document.querySelectorAll('[data-jogo-btn]').forEach(link => {
+    link.addEventListener('click', function() {
+        const id = this.dataset.jogoBtn;
+        const card = this.closest('.game-card');
+        adicionarPontos(id, card);
+    });
+});
+
+function animarNumero(inicio, fim) {
+    const elemento = document.getElementById('pontuacao');
+    const duracao = 600;
+    const inicioTempo = performance.now();
+
+    function atualizar(agora) {
+        const progresso = Math.min((agora - inicioTempo) / duracao, 1);
+        const valor = Math.floor(inicio + (fim - inicio) * progresso);
+        elemento.textContent = valor;
+        if (progresso < 1) requestAnimationFrame(atualizar);
     }
-    .barra-filtros {
-        justify-content: center;
+    requestAnimationFrame(atualizar);
+}
+
+// ========== RANKING ==========
+function atualizarRanking() {
+    const nomeAtual = localStorage.getItem('nomeUsuario') || 'Você';
+
+    // Jogadores fictícios, para dar contexto de ranking
+    const fakes = [
+        { nome: "SpaceMaster", pontos: 320 },
+        { nome: "NinjaVeloz", pontos: 245 },
+        { nome: "GamerPro", pontos: 180 },
+        { nome: "NovaEstrela", pontos: 95 },
+        { nome: "ProGamer22", pontos: 70 }
+    ];
+
+    const jogadores = fakes.filter(j => j.nome.toLowerCase() !== nomeAtual.toLowerCase());
+    jogadores.push({ nome: nomeAtual, pontos: pontuacao });
+
+    jogadores.sort((a, b) => b.pontos - a.pontos);
+
+    const lista = document.getElementById('listaRanking');
+    lista.innerHTML = '';
+
+    const medalhas = ['🥇', '🥈', '🥉'];
+
+    jogadores.forEach((jogador, index) => {
+        const li = document.createElement('li');
+        if (jogador.nome === nomeAtual) li.classList.add('voce');
+
+        const posicao = index < 3 ? medalhas[index] : `${index + 1}º`;
+
+        const spanPos = document.createElement('span');
+        spanPos.className = 'ranking-pos';
+        spanPos.textContent = posicao;
+
+        const spanNome = document.createElement('span');
+        spanNome.className = 'ranking-nome';
+        spanNome.textContent = jogador.nome; // textContent evita XSS
+
+        const spanPontos = document.createElement('span');
+        spanPontos.textContent = `${jogador.pontos} pts`;
+
+        li.append(spanPos, spanNome, spanPontos);
+        lista.appendChild(li);
+    });
+}
+
+function mostrarRanking() {
+    const box = document.getElementById('rankingBox');
+    box.classList.toggle('mostrar');
+    if (box.classList.contains('mostrar')) {
+        atualizarRanking();
     }
-    .barra-filtros .busca-wrap {
-        max-width: 100%;
+}
+
+// ========== AVALIAÇÕES ==========
+function carregarMinhasAvaliacoes() {
+    try {
+        return JSON.parse(localStorage.getItem(chaveUsuario('avaliacoes'))) || {};
+    } catch (e) {
+        return {};
     }
+}
+
+function estrelasTexto(nota) {
+    const cheias = Math.round(nota);
+    return '★'.repeat(cheias) + '☆'.repeat(5 - cheias);
+}
+
+function renderizarAvaliacoes() {
+    const minhas = carregarMinhasAvaliacoes();
+
+    document.querySelectorAll('.game-card').forEach(card => {
+        const nota = parseFloat(card.dataset.nota);
+        const contagem = card.dataset.contagem;
+
+        // Nota média (editorial, exibida como referência de popularidade)
+        const mediaEl = card.querySelector('.estrelas-media');
+        if (mediaEl) {
+            mediaEl.innerHTML = `${estrelasTexto(nota)} <span class="nota-num">${nota.toFixed(1)}</span> <span class="contagem">(${contagem})</span>`;
+        }
+
+        // Sua nota (interativa, salva localmente)
+        const jogoId = card.dataset.jogo;
+        const container = card.querySelector('[data-jogo-avaliar]');
+        if (container) {
+            container.innerHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'estrela';
+                btn.dataset.valor = i;
+                btn.setAttribute('aria-label', `Avaliar com ${i} estrela${i > 1 ? 's' : ''}`);
+                btn.textContent = '★';
+                if (minhas[jogoId] && i <= minhas[jogoId]) {
+                    btn.classList.add('preenchida');
+                }
+                btn.addEventListener('click', () => avaliarJogo(jogoId, i, card));
+                container.appendChild(btn);
+            }
+        }
+    });
+}
+
+function avaliarJogo(jogoId, valor, card) {
+    const minhas = carregarMinhasAvaliacoes();
+    const primeiraVez = !minhas[jogoId];
+    minhas[jogoId] = valor;
+    localStorage.setItem(chaveUsuario('avaliacoes'), JSON.stringify(minhas));
+
+    renderizarAvaliacoes();
+
+    if (primeiraVez) {
+        const pontosAntigos = pontuacao;
+        pontuacao += 5;
+        localStorage.setItem(chaveUsuario('pontuacao'), pontuacao);
+        animarNumero(pontosAntigos, pontuacao);
+
+        const msg = document.getElementById('mensagemPontos');
+        msg.textContent = '+5 pontos por avaliar! ⭐';
+        msg.classList.add('mostrar');
+        setTimeout(() => msg.classList.remove('mostrar'), 1400);
+
+        if (document.getElementById('rankingBox').classList.contains('mostrar')) {
+            atualizarRanking();
+        }
+    }
+}
+
+// ========== BUSCA ==========
+function filtrarJogos(termo) {
+    const busca = termo.trim().toLowerCase();
+    const cards = document.querySelectorAll('#gamesGrid .game-card');
+    let algumVisivel = false;
+
+    cards.forEach(card => {
+        const titulo = card.querySelector('h3').textContent.toLowerCase();
+        const descricao = card.querySelector('p').textContent.toLowerCase();
+        const corresponde = titulo.includes(busca) || descricao.includes(busca);
+        card.classList.toggle('escondido', !corresponde);
+        if (corresponde) algumVisivel = true;
+    });
+
+    document.getElementById('semResultados').classList.toggle('mostrar', !algumVisivel);
+}
+
+// ========== ORDENAÇÃO ==========
+function ordenarJogos(criterio) {
+    const grid = document.getElementById('gamesGrid');
+    const cards = Array.from(grid.querySelectorAll('.game-card'));
+
+    if (criterio === 'nota') {
+        cards.sort((a, b) => parseFloat(b.dataset.nota) - parseFloat(a.dataset.nota));
+    } else if (criterio === 'contagem') {
+        cards.sort((a, b) => parseInt(b.dataset.contagem) - parseInt(a.dataset.contagem));
+    } else {
+        cards.sort((a, b) => parseInt(a.dataset.ordemOriginal) - parseInt(b.dataset.ordemOriginal));
+    }
+
+    cards.forEach(card => grid.appendChild(card));
+}
+
+// Guarda a ordem original dos cards para a opção "Padrão"
+document.querySelectorAll('#gamesGrid .game-card').forEach((card, index) => {
+    card.dataset.ordemOriginal = index;
+});
+
+// ========== BANNER DE DESTAQUE ROTATIVO ==========
+let destaqueIndex = 0;
+let destaqueIntervalo = null;
+const cardsDestaque = Array.from(document.querySelectorAll('.game-card.destaque'));
+
+function renderizarDestaqueSlide(index) {
+    const card = cardsDestaque[index];
+    if (!card) return;
+
+    const titulo = card.querySelector('h3').textContent;
+    const desc = card.querySelector('p').textContent;
+    const link = card.querySelector('.btn-jogar').getAttribute('href');
+    const jogoId = card.dataset.jogo;
+    const nota = parseFloat(card.dataset.nota);
+    const contagem = card.dataset.contagem;
+    const personagemOriginal = card.querySelector('.personagem-card');
+
+    const slide = document.getElementById('destaqueSlide');
+    slide.innerHTML = '';
+
+    const info = document.createElement('div');
+    info.className = 'destaque-info';
+
+    const eyebrow = document.createElement('div');
+    eyebrow.className = 'destaque-eyebrow';
+    eyebrow.textContent = '★ Em destaque';
+
+    const tituloEl = document.createElement('div');
+    tituloEl.className = 'destaque-titulo';
+    tituloEl.textContent = titulo;
+
+    const descEl = document.createElement('div');
+    descEl.className = 'destaque-desc';
+    descEl.textContent = desc;
+
+    const rodape = document.createElement('div');
+    rodape.className = 'destaque-rodape';
+
+    const estrelasEl = document.createElement('div');
+    estrelasEl.className = 'estrelas-media';
+    estrelasEl.innerHTML = `${estrelasTexto(nota)} <span class="nota-num">${nota.toFixed(1)}</span> <span class="contagem">(${contagem})</span>`;
+
+    const botao = document.createElement('a');
+    botao.href = link;
+    botao.target = '_blank';
+    botao.rel = 'noopener noreferrer';
+    botao.className = 'btn-jogar';
+    botao.textContent = 'Jogar Agora';
+    botao.addEventListener('click', () => adicionarPontos(jogoId, card));
+
+    rodape.append(estrelasEl, botao);
+    info.append(eyebrow, tituloEl, descEl, rodape);
+
+    if (personagemOriginal) {
+        const personagemClone = personagemOriginal.cloneNode(true);
+        slide.append(personagemClone, info);
+    } else {
+        slide.append(info);
+    }
+
+    document.querySelectorAll('.dot').forEach((dot, i) => {
+        dot.classList.toggle('ativo', i === index);
+    });
+}
+
+function irParaSlide(index) {
+    destaqueIndex = index;
+    renderizarDestaqueSlide(destaqueIndex);
+}
+
+function iniciarDestaqueBanner() {
+    if (cardsDestaque.length === 0) return;
+
+    const dotsWrap = document.getElementById('destaqueDots');
+    dotsWrap.innerHTML = '';
+    cardsDestaque.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'dot';
+        dot.setAttribute('aria-label', `Ver destaque ${i + 1}`);
+        dot.addEventListener('click', () => {
+            irParaSlide(i);
+            reiniciarAutoRotate();
+        });
+        dotsWrap.appendChild(dot);
+    });
+
+    renderizarDestaqueSlide(destaqueIndex);
+    reiniciarAutoRotate();
+}
+
+function reiniciarAutoRotate() {
+    if (destaqueIntervalo) clearInterval(destaqueIntervalo);
+    const prefereReduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefereReduzido || cardsDestaque.length <= 1) return;
+
+    destaqueIntervalo = setInterval(() => {
+        destaqueIndex = (destaqueIndex + 1) % cardsDestaque.length;
+        renderizarDestaqueSlide(destaqueIndex);
+    }, 6000);
 }
