@@ -530,7 +530,8 @@ nav a:hover {
     outline: 2px solid var(--verde);
 }
 
-.barra-filtros .ordenar-wrap {
+.barra-filtros .ordenar-wrap,
+.barra-filtros .categoria-wrap {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -871,6 +872,26 @@ nav a:hover {
     min-height: 42px;
 }
 
+.selo-dev {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #fde68a;
+    background: rgba(251, 191, 36, 0.15);
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    padding: 3px 12px;
+    border-radius: 50px;
+}
+
+.acoes-card {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
 .btn-jogar {
     display: inline-block;
     background: var(--roxo);
@@ -886,6 +907,22 @@ nav a:hover {
 
 .btn-jogar:hover {
     background: #6d28d9;
+    transform: scale(1.05);
+}
+
+.btn-compartilhar {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #e0e7ff;
+    padding: 11px 16px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.btn-compartilhar:hover {
+    background: rgba(255, 255, 255, 0.18);
     transform: scale(1.05);
 }
 
@@ -1008,6 +1045,66 @@ nav a:hover {
     transform: translateX(-50%) translateY(0);
 }
 
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    padding: 20px;
+}
+
+.modal-overlay.escondido {
+    display: none;
+}
+
+.modal-box {
+    background: rgba(15, 12, 41, 0.96);
+    border: 1px solid rgba(167, 139, 250, 0.4);
+    border-radius: 20px;
+    padding: 32px 28px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.25s ease;
+}
+
+.modal-box h2 {
+    color: #c4b5fd;
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+}
+
+.modal-box p {
+    opacity: 0.85;
+    font-size: 0.92rem;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.modal-box .btn-principal {
+    margin-bottom: 14px;
+}
+
+.btn-fechar-modal {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #e0e7ff;
+    padding: 10px 24px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.btn-fechar-modal:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
 footer {
     background: rgba(0, 0, 0, 0.4);
     text-align: center;
@@ -1041,5 +1138,8 @@ footer {
     }
     .barra-filtros .busca-wrap {
         max-width: 100%;
+    }
+    .modal-box {
+        padding: 26px 20px;
     }
 }

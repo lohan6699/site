@@ -65,6 +65,7 @@
                 <div class="botoes-hero">
                     <a href="#jogos" class="btn-principal">Ver Jogos ↓</a>
                     <button class="btn-principal btn-ranking" onclick="mostrarRanking()">Ver Ranking 🏆</button>
+                    <button class="btn-principal btn-ranking" onclick="abrirModalSugerir()">Sugerir um Jogo ➕</button>
                 </div>
             </section>
 
@@ -85,6 +86,17 @@
                     <label for="buscaJogo" class="sr-only">Buscar jogo</label>
                     <input type="search" id="buscaJogo" placeholder="🔍 Buscar jogo..." oninput="filtrarJogos(this.value)">
                 </div>
+                <div class="categoria-wrap">
+                    <label for="filtroCategoria">Categoria:</label>
+                    <select id="filtroCategoria" onchange="filtrarPorCategoria(this.value)">
+                        <option value="todas">Todas</option>
+                        <option value="estrategia">Estratégia</option>
+                        <option value="plataforma">Plataforma</option>
+                        <option value="sobrevivencia">Sobrevivência</option>
+                        <option value="tiro">Tiro</option>
+                        <option value="palavras">Palavras</option>
+                    </select>
+                </div>
                 <div class="ordenar-wrap">
                     <label for="ordenarPor">Ordenar por:</label>
                     <select id="ordenarPor" onchange="ordenarJogos(this.value)">
@@ -98,7 +110,7 @@
             <div class="games-grid" id="gamesGrid">
 
                 <!-- Super Jogo da Velha -->
-                <div class="game-card destaque" data-jogo="velha" data-nota="4.8" data-contagem="212">
+                <div class="game-card destaque" data-jogo="velha" data-nota="4.8" data-contagem="212" data-categoria="estrategia">
                     <div class="personagem-card personagem-velha" aria-hidden="true">
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -144,13 +156,16 @@
                     <h3>Super Jogo da Velha</h3>
                     <p>Ultimate Tic-Tac-Toe com 9 tabuleiros!</p>
                     <div class="estrelas-media"></div>
-                    <a href="https://daniloaraujoalves-sudo.github.io/X-vs-O/" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="velha">Jogar Agora</a>
+                    <div class="acoes-card">
+                        <a href="https://daniloaraujoalves-sudo.github.io/X-vs-O/" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="velha">Jogar Agora</a>
+                        <button type="button" class="btn-compartilhar" title="Copiar link do jogo">🔗</button>
+                    </div>
                     <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="velha"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
                 <!-- Frog Quest — agora em destaque -->
-                <div class="game-card destaque" data-jogo="frogquest" data-nota="4.5" data-contagem="3">
+                <div class="game-card destaque" data-jogo="frogquest" data-nota="4.5" data-contagem="3" data-categoria="plataforma">
                     <div class="personagem-card personagem-frog personagem-card--sprite" aria-hidden="true">
                         <div class="personagem-sombra"></div>
                         <img class="personagem-sprite" src="frog.png" alt="Sapo ninja do Frog Quest, de headband vermelha e espada" width="113" height="114" loading="lazy" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext x=%2750%27 y=%2775%27 font-size=%2770%27 text-anchor=%27middle%27%3E%F0%9F%90%B8%3C/text%3E%3C/svg%3E';this.classList.add('sprite-fallback')">
@@ -158,14 +173,18 @@
                     <div class="game-criador">por Pedro</div>
                     <h3>Frog Quest</h3>
                     <p>Plataforma 2D com um sapo: pulo duplo, língua comprida e 10 níveis. Ainda em desenvolvimento.</p>
+                    <span class="selo-dev">🚧 Em desenvolvimento</span>
                     <div class="estrelas-media"></div>
-                    <a href="https://p3drico.itch.io/frog-quest" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="frogquest">Jogar Agora</a>
+                    <div class="acoes-card">
+                        <a href="https://p3drico.itch.io/frog-quest" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="frogquest">Jogar Agora</a>
+                        <button type="button" class="btn-compartilhar" title="Copiar link do jogo">🔗</button>
+                    </div>
                     <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="frogquest"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
                 <!-- Amazônia — agora em destaque -->
-                <div class="game-card destaque" data-jogo="amazonia" data-nota="4.5" data-contagem="3">
+                <div class="game-card destaque" data-jogo="amazonia" data-nota="4.5" data-contagem="3" data-categoria="sobrevivencia">
                     <div class="personagem-card personagem-explorador personagem-card--sprite" aria-hidden="true">
                         <div class="personagem-sombra"></div>
                         <img class="personagem-sprite" src="explorador.png" alt="P1, o explorador do jogo Amazônia — Sobrevivência" width="64" height="93" loading="lazy" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext x=%2750%27 y=%2775%27 font-size=%2770%27 text-anchor=%27middle%27%3E%F0%9F%A7%AD%3C/text%3E%3C/svg%3E';this.classList.add('sprite-fallback')">
@@ -174,13 +193,16 @@
                     <h3>Amazônia — Sobrevivência</h3>
                     <p>Sobreviva na floresta amazônica: craft, dia e noite, 10 lendas para desbloquear Manaus. Solo ou 2 jogadores.</p>
                     <div class="estrelas-media"></div>
-                    <a href="https://lohan6699.github.io/mamamia" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="amazonia">Jogar Agora</a>
+                    <div class="acoes-card">
+                        <a href="https://lohan6699.github.io/mamamia" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="amazonia">Jogar Agora</a>
+                        <button type="button" class="btn-compartilhar" title="Copiar link do jogo">🔗</button>
+                    </div>
                     <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="amazonia"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
                 <!-- Phantom FPS — agora em destaque -->
-                <div class="game-card destaque" data-jogo="phantomfps" data-nota="4.5" data-contagem="3">
+                <div class="game-card destaque" data-jogo="phantomfps" data-nota="4.5" data-contagem="3" data-categoria="tiro">
                     <div class="personagem-card personagem-soldado" aria-hidden="true">
                         <svg viewBox="0 0 130 120" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -223,19 +245,25 @@
                     <h3>Phantom FPS</h3>
                     <p>FPS tático em 1ª pessoa: missões, níveis, XP e sistema de conta. Mire com o mouse e elimine os inimigos.</p>
                     <div class="estrelas-media"></div>
-                    <a href="https://heloisaescobarsilva-oss.github.io/jogotiro/" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="phantomfps">Jogar Agora</a>
+                    <div class="acoes-card">
+                        <a href="https://heloisaescobarsilva-oss.github.io/jogotiro/" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="phantomfps">Jogar Agora</a>
+                        <button type="button" class="btn-compartilhar" title="Copiar link do jogo">🔗</button>
+                    </div>
                     <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="phantomfps"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
 
                 <!-- Caça-Palavras Neon -->
-                <div class="game-card" data-jogo="cacapalavras" data-nota="4.5" data-contagem="3">
+                <div class="game-card" data-jogo="cacapalavras" data-nota="4.5" data-contagem="3" data-categoria="palavras">
                     <span class="game-icon" aria-hidden="true">🔍</span>
                     <div class="game-criador">por João</div>
                     <h3>Caça-Palavras Neon</h3>
                     <p>Caça-palavras com categorias (animais, objetos, pessoas, carros), 3 níveis de dificuldade e ranking por tempo.</p>
                     <div class="estrelas-media"></div>
-                    <a href="https://joaoambaroliveira-a11y.github.io/Joao-Ambar/" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="cacapalavras">Jogar Agora</a>
+                    <div class="acoes-card">
+                        <a href="https://joaoambaroliveira-a11y.github.io/Joao-Ambar/" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="cacapalavras">Jogar Agora</a>
+                        <button type="button" class="btn-compartilhar" title="Copiar link do jogo">🔗</button>
+                    </div>
                     <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="cacapalavras"></span></div>
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                 </div>
@@ -251,6 +279,17 @@
                 <p>© 2026 Portal de Jogos • Feito com 💜</p>
             </div>
         </footer>
+    </div>
+
+    <!-- MODAL: SUGERIR UM JOGO -->
+    <div class="modal-overlay escondido" id="modalSugerir" onclick="fecharModalSeClicarFora(event)">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="tituloModalSugerir">
+            <h2 id="tituloModalSugerir">➕ Sugerir um Jogo</h2>
+            <p>Fez um jogo e quer ver ele aqui no portal? Manda o link, o nome do jogo e o seu nome de criador que a gente adiciona!</p>
+            <a class="btn-principal" href="mailto:seuemail@exemplo.com?subject=Sugest%C3%A3o%20de%20jogo%20para%20o%20Portal&body=Nome%20do%20jogo%3A%0ALink%20do%20jogo%3A%0AMeu%20nome%20(criador)%3A%0ADescri%C3%A7%C3%A3o%20curta%3A" target="_blank" rel="noopener noreferrer">Enviar por E-mail</a>
+            <br>
+            <button type="button" class="btn-fechar-modal" onclick="fecharModalSugerir()">Fechar</button>
+        </div>
     </div>
 
     <script src="script.js"></script>

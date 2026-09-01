@@ -188,6 +188,13 @@ function atualizarProgresso() {
     document.getElementById('progressoFill').style.width = `${(jogados / total) * 100}%`;
 }
 
+function mostrarMensagem(texto) {
+    const msg = document.getElementById('mensagemPontos');
+    msg.textContent = texto;
+    msg.classList.add('mostrar');
+    setTimeout(() => msg.classList.remove('mostrar'), 1400);
+}
+
 function adicionarPontos(id, card) {
     if (jogosJogados.includes(id)) return;
 
@@ -201,11 +208,7 @@ function adicionarPontos(id, card) {
     storage.setItem(chaveUsuario('pontuacao'), pontuacao);
 
     animarNumero(pontosAntigos, pontuacao);
-
-    const msg = document.getElementById('mensagemPontos');
-    msg.textContent = '+15 pontos! 🎉';
-    msg.classList.add('mostrar');
-    setTimeout(() => msg.classList.remove('mostrar'), 1400);
+    mostrarMensagem('+15 pontos! 🎉');
 
     if (document.getElementById('rankingBox').classList.contains('mostrar')) {
         atualizarRanking();
@@ -344,11 +347,7 @@ function avaliarJogo(jogoId, valor, card) {
         pontuacao += 5;
         storage.setItem(chaveUsuario('pontuacao'), pontuacao);
         animarNumero(pontosAntigos, pontuacao);
-
-        const msg = document.getElementById('mensagemPontos');
-        msg.textContent = '+5 pontos por avaliar! ⭐';
-        msg.classList.add('mostrar');
-        setTimeout(() => msg.classList.remove('mostrar'), 1400);
+        mostrarMensagem('+5 pontos por avaliar! ⭐');
 
         if (document.getElementById('rankingBox').classList.contains('mostrar')) {
             atualizarRanking();
@@ -356,15 +355,38 @@ function avaliarJogo(jogoId, valor, card) {
     }
 }
 
+let filtroTextoAtual = '';
+let filtroCategoriaAtual = 'todas';
+
 function filtrarJogos(termo) {
-    const busca = termo.trim().toLowerCase();
+    filtroTextoAtual = termo.trim().toLowerCase();
+    aplicarFiltros();
+}
+
+function filtrarPorCategoria(categoria) {
+    filtroCategoriaAtual = categoria;
+    aplicarFiltros();
+}
+
+function aplicarFiltros() {
     const cards = document.querySelectorAll('#gamesGrid .game-card');
     let algumVisivel = false;
 
     cards.forEach(card => {
         const titulo = card.querySelector('h3').textContent.toLowerCase();
         const descricao = card.querySelector('p').textContent.toLowerCase();
-        const corresponde = titulo.includes(busca) || descricao.includes(busca);
+        const criadorEl = card.querySelector('.game-criador');
+        const criador = criadorEl ? criadorEl.textContent.toLowerCase() : '';
+
+        const correspondeTexto = !filtroTextoAtual
+            || titulo.includes(filtroTextoAtual)
+            || descricao.includes(filtroTextoAtual)
+            || criador.includes(filtroTextoAtual);
+
+        const correspondeCategoria = filtroCategoriaAtual === 'todas'
+            || card.dataset.categoria === filtroCategoriaAtual;
+
+        const corresponde = correspondeTexto && correspondeCategoria;
         card.classList.toggle('escondido', !corresponde);
         if (corresponde) algumVisivel = true;
     });
@@ -490,3 +512,37 @@ function reiniciarAutoRotate() {
         renderizarDestaqueSlide(destaqueIndex);
     }, 6000);
 }
+
+// ========== COMPARTILHAR LINK DO JOGO ==========
+document.querySelectorAll('.btn-compartilhar').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const card = this.closest('.game-card');
+        const link = card.querySelector('.btn-jogar').href;
+
+        try {
+            await navigator.clipboard.writeText(link);
+            mostrarMensagem('Link copiado! 🔗');
+        } catch (e) {
+            // Navegadores sem permissão de clipboard (ou contexto file://):
+            // mostra o link pra copiar manualmente em vez de travar.
+            window.prompt('Copie o link do jogo:', link);
+        }
+    });
+});
+
+// ========== MODAL: SUGERIR UM JOGO ==========
+function abrirModalSugerir() {
+    document.getElementById('modalSugerir').classList.remove('escondido');
+}
+
+function fecharModalSugerir() {
+    document.getElementById('modalSugerir').classList.add('escondido');
+}
+
+function fecharModalSeClicarFora(evento) {
+    if (evento.target.id === 'modalSugerir') fecharModalSugerir();
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') fecharModalSugerir();
+});
