@@ -706,6 +706,18 @@ nav a:hover {
     45%, 55% { opacity: 1; }
 }
 
+@keyframes personagem-lupa-scan {
+    0%, 100% { transform: translate(-10px, 4px) rotate(-8deg); }
+    30% { transform: translate(8px, -12px) rotate(6deg); }
+    60% { transform: translate(-16px, -6px) rotate(-5deg); }
+    85% { transform: translate(6px, 8px) rotate(5deg); }
+}
+
+@keyframes personagem-letra-brilho {
+    0%, 100% { opacity: 0.55; transform: scale(0.92); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
 .personagem-velha .bot-x {
     animation: personagem-pular-bot 1.7s cubic-bezier(.45,0,.55,1) infinite;
     transform-box: fill-box;
@@ -778,6 +790,30 @@ nav a:hover {
 
 .personagem-soldado .tiro {
     animation: personagem-tiro 3.2s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-cacapalavras .grupo-cp {
+    animation: personagem-explorar-idle 2.8s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: bottom center;
+}
+
+.personagem-cacapalavras .lupa-cp {
+    animation: personagem-lupa-scan 3.4s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-cacapalavras .letra-destaque {
+    animation: personagem-letra-brilho 1.9s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-cacapalavras .olho-lupa {
+    animation: personagem-piscar 4.2s ease-in-out infinite;
     transform-box: fill-box;
     transform-origin: center;
 }
