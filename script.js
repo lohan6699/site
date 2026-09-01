@@ -513,23 +513,6 @@ function reiniciarAutoRotate() {
     }, 6000);
 }
 
-// ========== COMPARTILHAR LINK DO JOGO ==========
-document.querySelectorAll('.btn-compartilhar').forEach(btn => {
-    btn.addEventListener('click', async function() {
-        const card = this.closest('.game-card');
-        const link = card.querySelector('.btn-jogar').href;
-
-        try {
-            await navigator.clipboard.writeText(link);
-            mostrarMensagem('Link copiado! 🔗');
-        } catch (e) {
-            // Navegadores sem permissão de clipboard (ou contexto file://):
-            // mostra o link pra copiar manualmente em vez de travar.
-            window.prompt('Copie o link do jogo:', link);
-        }
-    });
-});
-
 // ========== MODAL: SUGERIR UM JOGO ==========
 function abrirModalSugerir() {
     document.getElementById('modalSugerir').classList.remove('escondido');
