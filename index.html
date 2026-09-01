@@ -12,15 +12,63 @@
 
     <div id="estrelas" aria-hidden="true"></div>
 
-    <!-- TELA DE LOGIN -->
+    <!-- TELA DE SPLASH (carregamento) -->
+    <div id="telaSplash">
+        <div class="splash-conteudo">
+            <div class="splash-logo" aria-hidden="true">🎮</div>
+            <h1 class="splash-titulo">Portal de Jogos</h1>
+            <div class="splash-barra"><div class="splash-barra-fill"></div></div>
+            <p class="splash-dica">Carregando...</p>
+        </div>
+    </div>
+
+    <!-- TELA DE LOGIN / CRIAR CONTA -->
     <div id="telaLogin">
         <div class="login-box">
             <h2>🎮 Portal de Jogos</h2>
-            <p>Digite seu nome para começar a jogar</p>
-            <label for="inputNome" class="sr-only">Seu nome</label>
-            <input type="text" id="inputNome" placeholder="Seu nome ou apelido" maxlength="15" autofocus autocomplete="off">
-            <div class="erro-login" id="erroLogin" role="alert"></div>
-            <button class="btn-entrar" onclick="fazerLogin()">Entrar</button>
+
+            <div class="login-abas" role="tablist">
+                <button type="button" class="aba-btn ativa" id="abaEntrarBtn" role="tab" aria-selected="true" aria-controls="formEntrar" onclick="mostrarAba('entrar')">Entrar</button>
+                <button type="button" class="aba-btn" id="abaCriarBtn" role="tab" aria-selected="false" aria-controls="formCriar" onclick="mostrarAba('criar')">Criar Conta</button>
+            </div>
+
+            <!-- FORM: ENTRAR -->
+            <form id="formEntrar" class="login-form" onsubmit="return fazerLogin(event)">
+                <label for="loginUsuario" class="sr-only">Usuário</label>
+                <input type="text" id="loginUsuario" placeholder="Usuário" maxlength="15" autocomplete="username" autofocus>
+
+                <label for="loginSenha" class="sr-only">Senha</label>
+                <div class="campo-senha">
+                    <input type="password" id="loginSenha" placeholder="Senha" autocomplete="current-password">
+                    <button type="button" class="btn-olho" onclick="alternarSenha('loginSenha', this)" aria-label="Mostrar senha">👁️</button>
+                </div>
+
+                <div class="erro-login" id="erroLogin" role="alert"></div>
+                <button type="submit" class="btn-entrar">Entrar</button>
+            </form>
+
+            <!-- FORM: CRIAR CONTA -->
+            <form id="formCriar" class="login-form escondido" onsubmit="return criarConta(event)">
+                <label for="criarUsuario" class="sr-only">Escolha um usuário</label>
+                <input type="text" id="criarUsuario" placeholder="Escolha um usuário" maxlength="15" autocomplete="username">
+
+                <label for="criarSenha" class="sr-only">Crie uma senha</label>
+                <div class="campo-senha">
+                    <input type="password" id="criarSenha" placeholder="Crie uma senha" autocomplete="new-password">
+                    <button type="button" class="btn-olho" onclick="alternarSenha('criarSenha', this)" aria-label="Mostrar senha">👁️</button>
+                </div>
+
+                <label for="criarSenha2" class="sr-only">Confirme a senha</label>
+                <div class="campo-senha">
+                    <input type="password" id="criarSenha2" placeholder="Confirme a senha" autocomplete="new-password">
+                    <button type="button" class="btn-olho" onclick="alternarSenha('criarSenha2', this)" aria-label="Mostrar senha">👁️</button>
+                </div>
+
+                <div class="erro-login" id="erroCriar" role="alert"></div>
+                <button type="submit" class="btn-entrar">Criar Conta</button>
+            </form>
+
+            <p class="login-nota">🔒 Sua conta e seu progresso ficam salvos neste navegador.</p>
         </div>
     </div>
 
@@ -112,6 +160,7 @@
                 <!-- Super Jogo da Velha -->
                 <div class="game-card destaque" data-jogo="velha" data-nota="4.8" data-contagem="212" data-categoria="estrategia">
                     <div class="personagem-card personagem-velha" aria-hidden="true">
+                        <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                                 <radialGradient id="gradX" cx="35%" cy="30%" r="75%">
@@ -164,6 +213,7 @@
                 <!-- Frog Quest — agora em destaque -->
                 <div class="game-card destaque" data-jogo="frogquest" data-nota="4.5" data-contagem="3" data-categoria="plataforma">
                     <div class="personagem-card personagem-frog personagem-card--sprite" aria-hidden="true">
+                        <div class="personagem-palco"></div>
                         <div class="personagem-sombra"></div>
                         <img class="personagem-sprite" src="frog.png" alt="Sapo ninja do Frog Quest, de headband vermelha e espada" width="113" height="114" loading="lazy" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext x=%2750%27 y=%2775%27 font-size=%2770%27 text-anchor=%27middle%27%3E%F0%9F%90%B8%3C/text%3E%3C/svg%3E';this.classList.add('sprite-fallback')">
                     </div>
@@ -180,6 +230,7 @@
                 <!-- Amazônia — agora em destaque -->
                 <div class="game-card destaque" data-jogo="amazonia" data-nota="4.5" data-contagem="3" data-categoria="sobrevivencia">
                     <div class="personagem-card personagem-explorador personagem-card--sprite" aria-hidden="true">
+                        <div class="personagem-palco"></div>
                         <div class="personagem-sombra"></div>
                         <img class="personagem-sprite" src="explorador.png" alt="P1, o explorador do jogo Amazônia — Sobrevivência" width="64" height="93" loading="lazy" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext x=%2750%27 y=%2775%27 font-size=%2770%27 text-anchor=%27middle%27%3E%F0%9F%A7%AD%3C/text%3E%3C/svg%3E';this.classList.add('sprite-fallback')">
                     </div>
@@ -195,6 +246,7 @@
                 <!-- Phantom FPS — agora em destaque -->
                 <div class="game-card destaque" data-jogo="phantomfps" data-nota="4.5" data-contagem="3" data-categoria="tiro">
                     <div class="personagem-card personagem-soldado" aria-hidden="true">
+                        <div class="personagem-palco"></div>
                         <svg viewBox="0 0 130 120" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                                 <linearGradient id="gradArmadura" x1="0" y1="0" x2="0" y2="1">
@@ -244,6 +296,7 @@
                 <!-- Caça-Palavras Neon -->
                 <div class="game-card" data-jogo="cacapalavras" data-nota="4.5" data-contagem="3" data-categoria="palavras">
                     <div class="personagem-card personagem-cacapalavras" aria-hidden="true">
+                        <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                                 <radialGradient id="gradLupa" cx="35%" cy="30%" r="75%">
