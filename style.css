@@ -603,6 +603,7 @@ nav a:hover {
     width: 92px;
     height: auto;
     overflow: visible;
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.35));
 }
 
 .destaque-slide .personagem-card {
@@ -790,6 +791,18 @@ nav a:hover {
 
 .personagem-soldado .tiro {
     animation: personagem-tiro 3.2s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-soldado .antena-luz {
+    animation: personagem-antena-blink 1.4s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-cacapalavras .sparkle-cp {
+    animation: personagem-mira 1.6s ease-in-out infinite;
     transform-box: fill-box;
     transform-origin: center;
 }
