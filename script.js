@@ -83,168 +83,46 @@ function migrarDadosAntigos() {
 
 const TOTAL_JOGOS = document.querySelectorAll('[data-jogo-btn]').length;
 
-const telaSplash = document.getElementById('telaSplash');
 const telaLogin = document.getElementById('telaLogin');
 const sitePrincipal = document.getElementById('sitePrincipal');
+const inputNome = document.getElementById('inputNome');
+const erroLogin = document.getElementById('erroLogin');
 
-// ========== CONTAS (usuário + senha) ==========
-// Importante: este site é 100% estático (GitHub Pages, sem servidor/banco
-// de dados). Por isso a conta e a senha ficam salvas só neste navegador,
-// no localStorage — não é uma conta "na nuvem" acessível de outro
-// computador. A senha passa por um hash simples abaixo só para não ficar
-// gravada em texto puro; isso NÃO é criptografia de verdade, então nunca
-// reaproveite aqui uma senha usada em outro lugar importante.
-function hashSenha(senha) {
-    let hash = 5381;
-    for (let i = 0; i < senha.length; i++) {
-        hash = ((hash << 5) + hash) + senha.charCodeAt(i);
-        hash = hash & hash;
-    }
-    return String(hash);
-}
-
-function carregarContas() {
+window.onload = function() {
     try {
-        return JSON.parse(storage.getItem('portal_contas')) || {};
+        const nomeSalvo = storage.getItem('nomeUsuario');
+        if (nomeSalvo) {
+            entrarNoSite(nomeSalvo);
+        }
     } catch (e) {
-        return {};
+        console.error('Erro ao carregar sessão salva:', e);
+        erroLogin.textContent = 'Não foi possível carregar seus dados salvos. Você ainda pode digitar seu nome e jogar normalmente.';
     }
-}
+};
 
-function salvarContas(contas) {
-    storage.setItem('portal_contas', JSON.stringify(contas));
-}
+inputNome.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') fazerLogin();
+});
 
-function mostrarErro(id, texto) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = texto;
-}
+inputNome.addEventListener('input', function() {
+    erroLogin.textContent = '';
+});
 
-function limparErros() {
-    mostrarErro('erroLogin', '');
-    mostrarErro('erroCriar', '');
-}
-
-function mostrarAba(aba) {
-    limparErros();
-    const btnEntrar = document.getElementById('abaEntrarBtn');
-    const btnCriar = document.getElementById('abaCriarBtn');
-    const formEntrar = document.getElementById('formEntrar');
-    const formCriar = document.getElementById('formCriar');
-
-    const ehEntrar = aba === 'entrar';
-    formEntrar.classList.toggle('escondido', !ehEntrar);
-    formCriar.classList.toggle('escondido', ehEntrar);
-    btnEntrar.classList.toggle('ativa', ehEntrar);
-    btnCriar.classList.toggle('ativa', !ehEntrar);
-    btnEntrar.setAttribute('aria-selected', String(ehEntrar));
-    btnCriar.setAttribute('aria-selected', String(!ehEntrar));
-
-    const alvo = document.getElementById(ehEntrar ? 'loginUsuario' : 'criarUsuario');
-    if (alvo) alvo.focus();
-}
-
-function alternarSenha(id, botao) {
-    const input = document.getElementById(id);
-    if (!input) return;
-    const mostrando = input.type === 'text';
-    input.type = mostrando ? 'password' : 'text';
-    botao.textContent = mostrando ? '👁️' : '🙈';
-    botao.setAttribute('aria-label', mostrando ? 'Mostrar senha' : 'Ocultar senha');
-}
-
-function criarConta(evento) {
-    if (evento) evento.preventDefault();
-    limparErros();
-
-    const usuario = sanitizarNome(document.getElementById('criarUsuario').value);
-    const senha = document.getElementById('criarSenha').value;
-    const senha2 = document.getElementById('criarSenha2').value;
-
-    if (usuario.length < 2) {
-        mostrarErro('erroCriar', 'Escolha um usuário com pelo menos 2 letras!');
-        return false;
+function fazerLogin() {
+    const nome = sanitizarNome(inputNome.value);
+    if (nome.length < 2) {
+        erroLogin.textContent = 'Digite um nome com pelo menos 2 letras!';
+        inputNome.focus();
+        return;
     }
-    if (senha.length < 4) {
-        mostrarErro('erroCriar', 'A senha precisa ter pelo menos 4 caracteres!');
-        return false;
-    }
-    if (senha !== senha2) {
-        mostrarErro('erroCriar', 'As senhas não são iguais!');
-        return false;
-    }
-
-    const contas = carregarContas();
-    const chave = usuario.toLowerCase();
-
-    if (contas[chave]) {
-        mostrarErro('erroCriar', 'Esse usuário já existe. Tente entrar ou escolha outro nome!');
-        return false;
-    }
-
-    contas[chave] = {
-        usuario: usuario,
-        senhaHash: hashSenha(senha),
-        criadoEm: Date.now()
-    };
-
     try {
-        salvarContas(contas);
-        storage.setItem('nomeUsuario', usuario);
-        entrarNoSite(usuario);
-    } catch (e) {
-        console.error('Erro ao criar conta:', e);
-        mostrarErro('erroCriar', 'Ocorreu um erro ao criar a conta. Veja o console do navegador (F12) para detalhes.');
-    }
-    return false;
-}
-
-function fazerLogin(evento) {
-    if (evento) evento.preventDefault();
-    limparErros();
-
-    const usuario = sanitizarNome(document.getElementById('loginUsuario').value);
-    const senha = document.getElementById('loginSenha').value;
-
-    if (usuario.length < 2) {
-        mostrarErro('erroLogin', 'Digite seu usuário!');
-        return false;
-    }
-    if (!senha) {
-        mostrarErro('erroLogin', 'Digite sua senha!');
-        return false;
-    }
-
-    const contas = carregarContas();
-    const conta = contas[usuario.toLowerCase()];
-
-    if (!conta) {
-        mostrarErro('erroLogin', 'Usuário não encontrado. Que tal criar uma conta? ➕');
-        return false;
-    }
-    if (conta.senhaHash !== hashSenha(senha)) {
-        mostrarErro('erroLogin', 'Senha incorreta!');
-        return false;
-    }
-
-    try {
-        storage.setItem('nomeUsuario', conta.usuario);
-        entrarNoSite(conta.usuario);
+        storage.setItem('nomeUsuario', nome);
+        entrarNoSite(nome);
     } catch (e) {
         console.error('Erro ao entrar no site:', e);
-        mostrarErro('erroLogin', 'Ocorreu um erro ao entrar. Veja o console do navegador (F12) para detalhes.');
+        erroLogin.textContent = 'Ocorreu um erro ao entrar. Veja o console do navegador (F12) para detalhes.';
     }
-    return false;
 }
-
-['loginUsuario', 'loginSenha'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', () => mostrarErro('erroLogin', ''));
-});
-['criarUsuario', 'criarSenha', 'criarSenha2'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', () => mostrarErro('erroCriar', ''));
-});
 
 function entrarNoSite(nome) {
     telaLogin.style.display = 'none';
@@ -274,29 +152,6 @@ function resetarProgresso() {
         location.reload();
     }
 }
-
-// ========== TELA DE SPLASH ==========
-window.onload = function() {
-    const prefereReduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const duracaoSplash = prefereReduzido ? 300 : 1600;
-
-    try {
-        const nomeSalvo = storage.getItem('nomeUsuario');
-        if (nomeSalvo) {
-            entrarNoSite(nomeSalvo);
-        }
-    } catch (e) {
-        console.error('Erro ao carregar sessão salva:', e);
-        mostrarErro('erroLogin', 'Não foi possível carregar seus dados salvos. Você ainda pode entrar ou criar uma conta normalmente.');
-    }
-
-    setTimeout(() => {
-        if (telaSplash) {
-            telaSplash.classList.add('escondido');
-            setTimeout(() => { telaSplash.style.display = 'none'; }, 500);
-        }
-    }, duracaoSplash);
-};
 
 let pontuacao = 0;
 let jogosJogados = [];

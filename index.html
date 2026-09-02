@@ -12,63 +12,15 @@
 
     <div id="estrelas" aria-hidden="true"></div>
 
-    <!-- TELA DE SPLASH (carregamento) -->
-    <div id="telaSplash">
-        <div class="splash-conteudo">
-            <div class="splash-logo" aria-hidden="true">🎮</div>
-            <h1 class="splash-titulo">Portal de Jogos</h1>
-            <div class="splash-barra"><div class="splash-barra-fill"></div></div>
-            <p class="splash-dica">Carregando...</p>
-        </div>
-    </div>
-
-    <!-- TELA DE LOGIN / CRIAR CONTA -->
+    <!-- TELA DE LOGIN -->
     <div id="telaLogin">
         <div class="login-box">
             <h2>🎮 Portal de Jogos</h2>
-
-            <div class="login-abas" role="tablist">
-                <button type="button" class="aba-btn ativa" id="abaEntrarBtn" role="tab" aria-selected="true" aria-controls="formEntrar" onclick="mostrarAba('entrar')">Entrar</button>
-                <button type="button" class="aba-btn" id="abaCriarBtn" role="tab" aria-selected="false" aria-controls="formCriar" onclick="mostrarAba('criar')">Criar Conta</button>
-            </div>
-
-            <!-- FORM: ENTRAR -->
-            <form id="formEntrar" class="login-form" onsubmit="return fazerLogin(event)">
-                <label for="loginUsuario" class="sr-only">Usuário</label>
-                <input type="text" id="loginUsuario" placeholder="Usuário" maxlength="15" autocomplete="username" autofocus>
-
-                <label for="loginSenha" class="sr-only">Senha</label>
-                <div class="campo-senha">
-                    <input type="password" id="loginSenha" placeholder="Senha" autocomplete="current-password">
-                    <button type="button" class="btn-olho" onclick="alternarSenha('loginSenha', this)" aria-label="Mostrar senha">👁️</button>
-                </div>
-
-                <div class="erro-login" id="erroLogin" role="alert"></div>
-                <button type="submit" class="btn-entrar">Entrar</button>
-            </form>
-
-            <!-- FORM: CRIAR CONTA -->
-            <form id="formCriar" class="login-form escondido" onsubmit="return criarConta(event)">
-                <label for="criarUsuario" class="sr-only">Escolha um usuário</label>
-                <input type="text" id="criarUsuario" placeholder="Escolha um usuário" maxlength="15" autocomplete="username">
-
-                <label for="criarSenha" class="sr-only">Crie uma senha</label>
-                <div class="campo-senha">
-                    <input type="password" id="criarSenha" placeholder="Crie uma senha" autocomplete="new-password">
-                    <button type="button" class="btn-olho" onclick="alternarSenha('criarSenha', this)" aria-label="Mostrar senha">👁️</button>
-                </div>
-
-                <label for="criarSenha2" class="sr-only">Confirme a senha</label>
-                <div class="campo-senha">
-                    <input type="password" id="criarSenha2" placeholder="Confirme a senha" autocomplete="new-password">
-                    <button type="button" class="btn-olho" onclick="alternarSenha('criarSenha2', this)" aria-label="Mostrar senha">👁️</button>
-                </div>
-
-                <div class="erro-login" id="erroCriar" role="alert"></div>
-                <button type="submit" class="btn-entrar">Criar Conta</button>
-            </form>
-
-            <p class="login-nota">🔒 Sua conta e seu progresso ficam salvos neste navegador.</p>
+            <p>Digite seu nome para começar a jogar</p>
+            <label for="inputNome" class="sr-only">Seu nome</label>
+            <input type="text" id="inputNome" placeholder="Seu nome ou apelido" maxlength="15" autofocus autocomplete="off">
+            <div class="erro-login" id="erroLogin" role="alert"></div>
+            <button class="btn-entrar" onclick="fazerLogin()">Entrar</button>
         </div>
     </div>
 
@@ -160,7 +112,6 @@
                 <!-- Super Jogo da Velha -->
                 <div class="game-card destaque" data-jogo="velha" data-nota="4.8" data-contagem="212" data-categoria="estrategia">
                     <div class="personagem-card personagem-velha" aria-hidden="true">
-                        <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                                 <radialGradient id="gradX" cx="35%" cy="30%" r="75%">
@@ -212,10 +163,36 @@
 
                 <!-- Frog Quest — agora em destaque -->
                 <div class="game-card destaque" data-jogo="frogquest" data-nota="4.5" data-contagem="3" data-categoria="plataforma">
-                    <div class="personagem-card personagem-frog personagem-card--sprite" aria-hidden="true">
-                        <div class="personagem-palco"></div>
-                        <div class="personagem-sombra"></div>
-                        <img class="personagem-sprite" src="frog.png" alt="Sapo ninja do Frog Quest, de headband vermelha e espada" width="113" height="114" loading="lazy" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext x=%2750%27 y=%2775%27 font-size=%2770%27 text-anchor=%27middle%27%3E%F0%9F%90%B8%3C/text%3E%3C/svg%3E';this.classList.add('sprite-fallback')">
+                    <div class="personagem-card personagem-frog" aria-hidden="true">
+                        <svg viewBox="0 0 130 110" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <radialGradient id="gradSapo" cx="35%" cy="25%" r="80%">
+                                    <stop offset="0%" stop-color="#6ee7b7"/>
+                                    <stop offset="100%" stop-color="#059669"/>
+                                </radialGradient>
+                            </defs>
+                            <ellipse class="sombra-sapo" cx="65" cy="100" rx="30" ry="7" fill="rgba(0,0,0,0.25)"/>
+                            <g class="corpo-sapo">
+                                <ellipse cx="42" cy="88" rx="11" ry="8" fill="#047857"/>
+                                <ellipse cx="88" cy="88" rx="11" ry="8" fill="#047857"/>
+                                <ellipse cx="65" cy="62" rx="34" ry="27" fill="url(#gradSapo)" stroke="#065f46" stroke-width="2"/>
+                                <ellipse cx="65" cy="76" rx="19" ry="13" fill="#d1fae5"/>
+                                <ellipse cx="34" cy="64" rx="9" ry="7" fill="#059669"/>
+                                <ellipse cx="96" cy="64" rx="9" ry="7" fill="#059669"/>
+                                <circle cx="49" cy="36" r="11" fill="#fff" stroke="#065f46" stroke-width="1.5"/>
+                                <circle cx="81" cy="36" r="11" fill="#fff" stroke="#065f46" stroke-width="1.5"/>
+                                <circle class="olho-sapo" cx="49" cy="37" r="5" fill="#0f172a"/>
+                                <circle class="olho-sapo" cx="81" cy="37" r="5" fill="#0f172a"/>
+                                <rect x="30" y="42" width="70" height="9" rx="4" fill="#ef4444"/>
+                                <circle cx="65" cy="46" r="4" fill="#fbbf24"/>
+                                <path d="M96 46 q14 4 10 16 q10 -8 4 -18 z" fill="#ef4444"/>
+                                <g class="espada-sapo" transform="translate(100,60) rotate(35)">
+                                    <rect x="0" y="-2" width="34" height="4" fill="#cbd5e1"/>
+                                    <rect x="-8" y="-4" width="8" height="8" rx="2" fill="#78350f"/>
+                                </g>
+                                <path d="M56 58 q9 7 18 0" stroke="#065f46" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            </g>
+                        </svg>
                     </div>
                     <div class="game-criador">por Pedro</div>
                     <h3>Frog Quest</h3>
@@ -229,14 +206,42 @@
 
                 <!-- Amazônia — agora em destaque -->
                 <div class="game-card destaque" data-jogo="amazonia" data-nota="4.5" data-contagem="3" data-categoria="sobrevivencia">
-                    <div class="personagem-card personagem-explorador personagem-card--sprite" aria-hidden="true">
-                        <div class="personagem-palco"></div>
-                        <div class="personagem-sombra"></div>
-                        <img class="personagem-sprite" src="explorador.png" alt="P1, o explorador do jogo Amazônia — Sobrevivência" width="64" height="93" loading="lazy" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext x=%2750%27 y=%2775%27 font-size=%2770%27 text-anchor=%27middle%27%3E%F0%9F%A7%AD%3C/text%3E%3C/svg%3E';this.classList.add('sprite-fallback')">
+                    <div class="personagem-card personagem-explorador" aria-hidden="true">
+                        <svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="gradChapeu" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#d4a373"/>
+                                    <stop offset="100%" stop-color="#a9714f"/>
+                                </linearGradient>
+                            </defs>
+                            <ellipse class="sombra-explorador" cx="50" cy="102" rx="26" ry="6" fill="rgba(0,0,0,0.25)"/>
+                            <g class="corpo-explorador">
+                                <rect x="60" y="48" width="20" height="30" rx="6" fill="#78350f" stroke="#451a03" stroke-width="1.5"/>
+                                <rect x="63" y="52" width="14" height="6" rx="2" fill="#92400e"/>
+                                <rect x="36" y="80" width="12" height="22" rx="4" fill="#57534e"/>
+                                <rect x="52" y="80" width="12" height="22" rx="4" fill="#57534e"/>
+                                <rect x="30" y="50" width="40" height="34" rx="12" fill="#84cc16" stroke="#3f6212" stroke-width="1.5"/>
+                                <rect x="38" y="58" width="24" height="6" rx="3" fill="#65a30d"/>
+                                <ellipse cx="27" cy="62" rx="7" ry="10" fill="#84cc16" stroke="#3f6212" stroke-width="1.2"/>
+                                <ellipse cx="73" cy="62" rx="7" ry="10" fill="#84cc16" stroke="#3f6212" stroke-width="1.2"/>
+                                <circle cx="50" cy="34" r="17" fill="#f4c9a0" stroke="#c48a5a" stroke-width="1.2"/>
+                                <circle class="olho-explorador" cx="44" cy="34" r="2.4" fill="#292524"/>
+                                <circle class="olho-explorador" cx="56" cy="34" r="2.4" fill="#292524"/>
+                                <path d="M44 41 q6 5 12 0" stroke="#78350f" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                                <ellipse cx="50" cy="21" rx="26" ry="6" fill="url(#gradChapeu)"/>
+                                <path d="M34 21 q16 -18 32 0 q-16 8 -32 0z" fill="url(#gradChapeu)" stroke="#78350f" stroke-width="1"/>
+                                <rect x="38" y="17" width="24" height="5" rx="2" fill="#3f6212"/>
+                                <g class="faca-explorador" transform="translate(80,66) rotate(30)">
+                                    <rect x="0" y="-2" width="22" height="4" fill="#d6d3d1"/>
+                                    <rect x="-6" y="-3" width="6" height="6" rx="1.5" fill="#57534e"/>
+                                </g>
+                            </g>
+                        </svg>
                     </div>
                     <div class="game-criador">por Lohan</div>
                     <h3>Amazônia — Sobrevivência</h3>
                     <p>Sobreviva na floresta amazônica: craft, dia e noite, 10 lendas para desbloquear Manaus. Solo ou 2 jogadores.</p>
+                    <span class="selo-dev">🚧 Em desenvolvimento</span>
                     <div class="estrelas-media"></div>
                     <a href="https://lohan6699.github.io/mamamia" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="amazonia">Jogar Agora</a>
                     <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="amazonia"></span></div>
@@ -246,7 +251,6 @@
                 <!-- Phantom FPS — agora em destaque -->
                 <div class="game-card destaque" data-jogo="phantomfps" data-nota="4.5" data-contagem="3" data-categoria="tiro">
                     <div class="personagem-card personagem-soldado" aria-hidden="true">
-                        <div class="personagem-palco"></div>
                         <svg viewBox="0 0 130 120" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                                 <linearGradient id="gradArmadura" x1="0" y1="0" x2="0" y2="1">
@@ -296,7 +300,6 @@
                 <!-- Caça-Palavras Neon -->
                 <div class="game-card" data-jogo="cacapalavras" data-nota="4.5" data-contagem="3" data-categoria="palavras">
                     <div class="personagem-card personagem-cacapalavras" aria-hidden="true">
-                        <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                                 <radialGradient id="gradLupa" cx="35%" cy="30%" r="75%">
