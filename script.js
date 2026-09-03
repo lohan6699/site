@@ -257,6 +257,7 @@ function entrarNoSite(nome) {
     carregarJogosJogados();
     renderizarAvaliacoes();
     iniciarDestaqueBanner();
+    renderizarTodosComentarios();
 }
 
 function fazerLogout() {
@@ -522,14 +523,16 @@ function aplicarFiltros() {
         const descricao = card.querySelector('p').textContent.toLowerCase();
         const criadorEl = card.querySelector('.game-criador');
         const criador = criadorEl ? criadorEl.textContent.toLowerCase() : '';
+        const categoriaCard = (card.dataset.categoria || '').trim().toLowerCase();
 
         const correspondeTexto = !filtroTextoAtual
             || titulo.includes(filtroTextoAtual)
             || descricao.includes(filtroTextoAtual)
             || criador.includes(filtroTextoAtual);
 
-        const correspondeCategoria = filtroCategoriaAtual === 'todas'
-            || card.dataset.categoria === filtroCategoriaAtual;
+        const categoriaFiltro = (filtroCategoriaAtual || 'todas').trim().toLowerCase();
+        const correspondeCategoria = categoriaFiltro === 'todas'
+            || categoriaCard === categoriaFiltro;
 
         const corresponde = correspondeTexto && correspondeCategoria;
         card.classList.toggle('escondido', !corresponde);
@@ -673,4 +676,218 @@ function fecharModalSeClicarFora(evento) {
 
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') fecharModalSugerir();
+});
+
+// ========== COMENTÁRIOS ==========
+// Comentários ficam salvos de forma GLOBAL (não por usuário), pra todo
+// mundo que abre o site neste navegador ver os mesmos comentários de um
+// jogo. Como o site é 100% estático, isso ainda é "local" a cada
+// navegador/dispositivo — não é um comentário compartilhado com outras
+// pessoas em outros computadores, só entre quem usa esse mesmo navegador.
+const CHAVE_COMENTARIOS = 'portal_comentarios';
+const LIMITE_COMENTARIO = 300;
+
+function carregarTodosComentarios() {
+    try {
+        return JSON.parse(storage.getItem(CHAVE_COMENTARIOS)) || {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function salvarTodosComentarios(dados) {
+    storage.setItem(CHAVE_COMENTARIOS, JSON.stringify(dados));
+}
+
+function formatarDataComentario(timestamp) {
+    try {
+        const data = new Date(timestamp);
+        return data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) +
+            ' ' + data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    } catch (e) {
+        return '';
+    }
+}
+
+function idComentarioUnico() {
+    return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+function contarComentarios(jogoId) {
+    const todos = carregarTodosComentarios();
+    return (todos[jogoId] || []).length;
+}
+
+function atualizarContagemComentarios(jogoId) {
+    const btn = document.querySelector(`[data-jogo-comentarios="${jogoId}"] .comentarios-contagem`)
+        || document.querySelector(`[data-jogo-comentarios="${jogoId}"]`)?.querySelector('.comentarios-contagem');
+    const contagem = contarComentarios(jogoId);
+    document.querySelectorAll(`[data-jogo-comentarios="${jogoId}"] .comentarios-contagem`).forEach(el => {
+        el.textContent = contagem > 0 ? `(${contagem})` : '';
+    });
+}
+
+function renderizarComentarios(jogoId) {
+    const box = document.querySelector(`[data-comentarios-box="${jogoId}"]`);
+    if (!box) return;
+
+    const todos = carregarTodosComentarios();
+    const lista = todos[jogoId] || [];
+    const nomeAtual = storage.getItem('nomeUsuario') || '';
+
+    box.innerHTML = '';
+
+    const ul = document.createElement('ul');
+    ul.className = 'comentarios-lista';
+
+    lista.slice().reverse().forEach(comentario => {
+        const li = document.createElement('li');
+        li.className = 'comentario-item';
+
+        const cabecalho = document.createElement('div');
+        cabecalho.className = 'comentario-cabecalho';
+
+        const autor = document.createElement('span');
+        autor.className = 'comentario-autor';
+        autor.textContent = comentario.autor;
+        autor.title = comentario.autor;
+
+        const data = document.createElement('span');
+        data.className = 'comentario-data';
+        data.textContent = formatarDataComentario(comentario.data);
+
+        cabecalho.append(autor, data);
+
+        const texto = document.createElement('div');
+        texto.className = 'comentario-texto';
+        texto.textContent = comentario.texto;
+
+        li.append(cabecalho, texto);
+
+        if (comentario.autor.toLowerCase() === nomeAtual.toLowerCase()) {
+            const excluir = document.createElement('button');
+            excluir.type = 'button';
+            excluir.className = 'comentario-excluir';
+            excluir.textContent = '🗑️ Excluir';
+            excluir.addEventListener('click', () => excluirComentario(jogoId, comentario.id));
+            li.appendChild(excluir);
+        }
+
+        ul.appendChild(li);
+    });
+
+    const form = document.createElement('div');
+    form.className = 'comentario-form';
+
+    const textarea = document.createElement('textarea');
+    textarea.className = 'comentario-textarea';
+    textarea.placeholder = 'Escreva um comentário sobre este jogo...';
+    textarea.maxLength = LIMITE_COMENTARIO;
+
+    const enviar = document.createElement('button');
+    enviar.type = 'button';
+    enviar.className = 'comentario-enviar';
+    enviar.textContent = 'Enviar';
+
+    const erro = document.createElement('div');
+    erro.className = 'comentario-erro';
+
+    function tentarEnviar() {
+        const texto = textarea.value.trim();
+        erro.textContent = '';
+
+        if (!nomeAtual) {
+            erro.textContent = 'Você precisa estar logado para comentar.';
+            return;
+        }
+        if (!texto) {
+            erro.textContent = 'Escreva algo antes de enviar.';
+            return;
+        }
+        if (texto.length > LIMITE_COMENTARIO) {
+            erro.textContent = `Máximo de ${LIMITE_COMENTARIO} caracteres.`;
+            return;
+        }
+
+        adicionarComentario(jogoId, nomeAtual, texto);
+        textarea.value = '';
+    }
+
+    enviar.addEventListener('click', tentarEnviar);
+    textarea.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            tentarEnviar();
+        }
+    });
+
+    form.append(textarea, enviar);
+
+    box.append(ul, form, erro);
+}
+
+function adicionarComentario(jogoId, autor, texto) {
+    const todos = carregarTodosComentarios();
+    if (!todos[jogoId]) todos[jogoId] = [];
+
+    const primeiraVez = todos[jogoId].every(c => c.autor.toLowerCase() !== autor.toLowerCase());
+
+    todos[jogoId].push({
+        id: idComentarioUnico(),
+        autor: autor,
+        texto: texto.slice(0, LIMITE_COMENTARIO),
+        data: Date.now()
+    });
+
+    salvarTodosComentarios(todos);
+    renderizarComentarios(jogoId);
+    atualizarContagemComentarios(jogoId);
+    mostrarMensagem('Comentário enviado! 💬');
+
+    if (primeiraVez) {
+        const pontosAntigos = pontuacao;
+        pontuacao += 5;
+        storage.setItem(chaveUsuario('pontuacao'), pontuacao);
+        animarNumero(pontosAntigos, pontuacao);
+        if (document.getElementById('rankingBox').classList.contains('mostrar')) {
+            atualizarRanking();
+        }
+    }
+}
+
+function excluirComentario(jogoId, comentarioId) {
+    if (!confirm('Excluir esse comentário?')) return;
+
+    const todos = carregarTodosComentarios();
+    if (!todos[jogoId]) return;
+
+    todos[jogoId] = todos[jogoId].filter(c => c.id !== comentarioId);
+    salvarTodosComentarios(todos);
+    renderizarComentarios(jogoId);
+    atualizarContagemComentarios(jogoId);
+}
+
+function alternarComentarios(jogoId) {
+    const box = document.querySelector(`[data-comentarios-box="${jogoId}"]`);
+    if (!box) return;
+
+    const abrindo = box.classList.contains('escondido');
+    box.classList.toggle('escondido');
+
+    if (abrindo) {
+        renderizarComentarios(jogoId);
+        const textarea = box.querySelector('.comentario-textarea');
+        if (textarea) textarea.focus();
+    }
+}
+
+function renderizarTodosComentarios() {
+    document.querySelectorAll('[data-jogo-comentarios]').forEach(btn => {
+        const jogoId = btn.dataset.jogoComentarios;
+        atualizarContagemComentarios(jogoId);
+    });
+}
+
+document.querySelectorAll('[data-jogo-comentarios]').forEach(btn => {
+    btn.addEventListener('click', () => alternarComentarios(btn.dataset.jogoComentarios));
 });

@@ -752,8 +752,6 @@ nav a:hover {
     width: 118px;
 }
 
-/* "Palco" — fundo circular com brilho atrás de todos os ícones,
-   pra dar um acabamento mais bonito e consistente entre os jogos. */
 .personagem-palco {
     position: absolute;
     top: 50%;
@@ -1108,9 +1106,6 @@ nav a:hover {
     z-index: 1;
 }
 
-/* Usado quando a imagem original (frog.png / explorador.png) não é
-   encontrada: mostra um emoji no lugar, sem a renderização "pixelada"
-   pensada para sprites de verdade. */
 .personagem-sprite.sprite-fallback {
     image-rendering: auto;
 }
@@ -1415,4 +1410,155 @@ footer {
     .modal-box {
         padding: 26px 20px;
     }
+}
+
+/* ========== COMENTÁRIOS ========== */
+.btn-comentarios {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    background: rgba(96, 165, 250, 0.12);
+    border: 1px solid rgba(96, 165, 250, 0.4);
+    color: #bfdbfe;
+    padding: 8px 14px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-comentarios:hover {
+    background: rgba(96, 165, 250, 0.22);
+}
+
+.comentarios-contagem {
+    opacity: 0.75;
+    font-weight: 500;
+}
+
+.comentarios-box {
+    margin-top: 14px;
+    text-align: left;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 14px;
+    animation: fadeIn 0.25s ease;
+}
+
+.comentarios-lista {
+    list-style: none;
+    max-height: 220px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.comentarios-lista:empty::before {
+    content: "Ainda não há comentários. Seja o primeiro!";
+    display: block;
+    font-size: 0.82rem;
+    opacity: 0.6;
+    padding: 6px 2px;
+}
+
+.comentario-item {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+}
+
+.comentario-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 3px;
+}
+
+.comentario-autor {
+    font-weight: 700;
+    color: #a7f3d0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.comentario-data {
+    font-size: 0.72rem;
+    opacity: 0.55;
+    flex-shrink: 0;
+}
+
+.comentario-texto {
+    opacity: 0.92;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.comentario-excluir {
+    background: none;
+    border: none;
+    color: #fca5a5;
+    font-size: 0.72rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    opacity: 0.75;
+    align-self: flex-start;
+}
+
+.comentario-excluir:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.comentario-form {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.comentario-textarea {
+    flex: 1;
+    resize: vertical;
+    min-height: 40px;
+    max-height: 120px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    color: #fff;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    font-family: inherit;
+}
+
+.comentario-textarea:focus-visible {
+    outline: 2px solid var(--verde);
+}
+
+.comentario-enviar {
+    background: linear-gradient(90deg, #7c3aed, #4f46e5);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.comentario-enviar:hover {
+    filter: brightness(1.1);
+}
+
+.comentario-erro {
+    font-size: 0.75rem;
+    color: #fca5a5;
+    margin-top: 6px;
+    min-height: 14px;
 }
