@@ -35,6 +35,10 @@ body {
     border: 0;
 }
 
+.escondido {
+    display: none !important;
+}
+
 #estrelas {
     position: fixed;
     inset: 0;
@@ -79,6 +83,76 @@ a, button { font-family: inherit; }
     border-radius: 6px;
 }
 
+/* ========== TELA DE SPLASH ========== */
+#telaSplash {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#telaSplash.escondido {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.splash-conteudo {
+    text-align: center;
+}
+
+.splash-logo {
+    font-size: 4.4rem;
+    animation: splash-pulso 1.3s ease-in-out infinite;
+}
+
+.splash-titulo {
+    margin-top: 8px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.splash-barra {
+    width: 190px;
+    height: 6px;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.12);
+    overflow: hidden;
+    margin: 22px auto 10px;
+}
+
+.splash-barra-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #a78bfa, #34d399);
+    animation: splash-progresso 1.4s ease forwards;
+}
+
+.splash-dica {
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+@keyframes splash-pulso {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+}
+
+@keyframes splash-progresso {
+    from { width: 0%; }
+    to { width: 100%; }
+}
+
+/* ========== TELA DE LOGIN / CRIAR CONTA ========== */
 #telaLogin {
     position: fixed;
     inset: 0;
@@ -93,7 +167,7 @@ a, button { font-family: inherit; }
     background: rgba(0, 0, 0, 0.55);
     border: 1px solid rgba(167, 139, 250, 0.4);
     border-radius: 24px;
-    padding: 42px 36px;
+    padding: 38px 36px;
     width: 90%;
     max-width: 390px;
     text-align: center;
@@ -103,14 +177,39 @@ a, button { font-family: inherit; }
 
 .login-box h2 {
     font-size: 1.9rem;
-    margin-bottom: 8px;
+    margin-bottom: 18px;
     color: #c4b5fd;
 }
 
-.login-box p {
-    opacity: 0.8;
-    margin-bottom: 26px;
-    font-size: 0.95rem;
+.login-abas {
+    display: flex;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 14px;
+    padding: 4px;
+    margin-bottom: 20px;
+}
+
+.aba-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.65);
+    padding: 10px 8px;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.aba-btn.ativa {
+    background: linear-gradient(90deg, #7c3aed, #4f46e5);
+    color: #fff;
+}
+
+.login-form {
+    text-align: left;
 }
 
 .login-box input {
@@ -121,7 +220,7 @@ a, button { font-family: inherit; }
     background: rgba(255,255,255,0.08);
     color: white;
     font-size: 1.05rem;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     outline: none;
     transition: border-color 0.25s;
 }
@@ -130,12 +229,46 @@ a, button { font-family: inherit; }
     border-color: var(--roxo-claro);
 }
 
+.campo-senha {
+    position: relative;
+}
+
+.campo-senha input {
+    padding-right: 46px;
+}
+
+.btn-olho {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: -5px;
+    background: none;
+    border: none;
+    font-size: 1.05rem;
+    cursor: pointer;
+    padding: 6px 8px;
+    line-height: 1;
+    opacity: 0.8;
+}
+
+.btn-olho:hover {
+    opacity: 1;
+}
+
 .erro-login {
     color: #fca5a5;
     font-size: 0.85rem;
     min-height: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     text-align: left;
+}
+
+.login-nota {
+    margin-top: 18px;
+    font-size: 0.78rem;
+    opacity: 0.65;
+    text-align: center;
 }
 
 .btn-entrar {
@@ -149,6 +282,7 @@ a, button { font-family: inherit; }
     font-weight: 700;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 4px;
 }
 
 .btn-entrar:hover {
@@ -597,13 +731,16 @@ nav a:hover {
     margin-bottom: 10px;
     display: flex;
     justify-content: center;
+    position: relative;
 }
 
 .personagem-card svg {
     width: 92px;
     height: auto;
     overflow: visible;
-    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.35));
+    position: relative;
+    z-index: 2;
+    transition: filter 0.3s ease;
 }
 
 .destaque-slide .personagem-card {
@@ -613,6 +750,43 @@ nav a:hover {
 
 .destaque-slide .personagem-card svg {
     width: 118px;
+}
+
+/* "Palco" — fundo circular com brilho atrás de todos os ícones,
+   pra dar um acabamento mais bonito e consistente entre os jogos. */
+.personagem-palco {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle at 35% 30%, rgba(167,139,250,0.38), rgba(96,165,250,0.12) 55%, rgba(167,139,250,0.02) 75%);
+    border: 1px solid rgba(167, 139, 250, 0.28);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.03) inset, 0 8px 24px rgba(124,58,237,0.15);
+    z-index: 0;
+    animation: palco-pulso 3.2s ease-in-out infinite;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+@keyframes palco-pulso {
+    0%, 100% { opacity: 0.75; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
+}
+
+.game-card:hover .personagem-palco {
+    border-color: rgba(167, 139, 250, 0.55);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.05) inset, 0 10px 28px rgba(124,58,237,0.32);
+}
+
+.game-card:hover .personagem-card svg {
+    filter: drop-shadow(0 0 10px rgba(167, 139, 250, 0.45));
+}
+
+.destaque-slide .personagem-palco {
+    width: 132px;
+    height: 132px;
 }
 
 @keyframes personagem-pular {
@@ -795,18 +969,6 @@ nav a:hover {
     transform-origin: center;
 }
 
-.personagem-soldado .antena-luz {
-    animation: personagem-antena-blink 1.4s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: center;
-}
-
-.personagem-cacapalavras .sparkle-cp {
-    animation: personagem-mira 1.6s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: center;
-}
-
 .personagem-cacapalavras .grupo-cp {
     animation: personagem-explorar-idle 2.8s ease-in-out infinite;
     transform-box: fill-box;
@@ -831,52 +993,110 @@ nav a:hover {
     transform-origin: center;
 }
 
-.personagem-frog .corpo-sapo {
-    animation: personagem-pular-squash 1.5s cubic-bezier(.45,0,.55,1) infinite;
+@keyframes personagem-simbolo-flutuar {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+    50% { transform: translateY(-8px) rotate(6deg); opacity: 1; }
+}
+
+.personagem-matematica .corpo-calc {
+    animation: personagem-respirar 2.4s ease-in-out infinite;
     transform-box: fill-box;
     transform-origin: bottom center;
 }
 
-.personagem-frog .sombra-sapo {
-    animation: personagem-sombra-pulo 1.5s cubic-bezier(.45,0,.55,1) infinite;
+.personagem-matematica .simbolo-flutuante {
+    animation: personagem-simbolo-flutuar 2.6s ease-in-out infinite;
     transform-box: fill-box;
     transform-origin: center;
 }
 
-.personagem-frog .olho-sapo {
+.personagem-matematica .simbolo-2 { animation-delay: 0.6s; }
+.personagem-matematica .simbolo-3 { animation-delay: 1.2s; }
+.personagem-matematica .simbolo-4 { animation-delay: 1.8s; }
+
+.personagem-matematica .antena-luz-mat {
+    animation: personagem-antena-blink 1.6s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-matematica .olho-mat {
     animation: personagem-piscar 3.8s ease-in-out infinite;
     transform-box: fill-box;
     transform-origin: center;
 }
 
-.personagem-frog .espada-sapo {
-    animation: personagem-balancar 2.4s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: left center;
+.personagem-card--sprite {
+    position: relative;
+    align-items: flex-end;
+    min-height: 94px;
+    padding-bottom: 6px;
 }
 
-.personagem-explorador .corpo-explorador {
+.personagem-sprite {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    height: 82px;
+    width: auto;
+    max-width: 100%;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 6px 5px rgba(0,0,0,0.45));
+    transition: filter 0.3s ease;
+}
+
+.game-card:hover .personagem-sprite {
+    filter: drop-shadow(0 6px 5px rgba(0,0,0,0.45)) drop-shadow(0 0 12px rgba(167, 139, 250, 0.5));
+}
+
+.personagem-sombra {
+    position: absolute;
+    bottom: 2px;
+    width: 56px;
+    height: 13px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.5), rgba(0,0,0,0) 72%);
+    z-index: 1;
+}
+
+/* Usado quando a imagem original (frog.png / explorador.png) não é
+   encontrada: mostra um emoji no lugar, sem a renderização "pixelada"
+   pensada para sprites de verdade. */
+.personagem-sprite.sprite-fallback {
+    image-rendering: auto;
+}
+
+.personagem-explorador .personagem-sprite {
     animation: personagem-explorar-idle 2.4s ease-in-out infinite;
-    transform-box: fill-box;
     transform-origin: bottom center;
 }
 
-.personagem-explorador .sombra-explorador {
+.personagem-explorador .personagem-sombra {
     animation: personagem-sombra-idle 2.4s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: center;
 }
 
-.personagem-explorador .olho-explorador {
-    animation: personagem-piscar 4s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: center;
+.personagem-frog .personagem-sprite {
+    height: 78px;
+    animation: personagem-pular-squash 1.5s cubic-bezier(.45,0,.55,1) infinite;
+    transform-origin: bottom center;
 }
 
-.personagem-explorador .faca-explorador {
-    animation: personagem-balancar 2.8s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: left center;
+.personagem-frog .personagem-sombra {
+    animation: personagem-sombra-pulo 1.5s cubic-bezier(.45,0,.55,1) infinite;
+}
+
+.destaque-slide .personagem-sprite {
+    height: 108px;
+}
+
+.destaque-slide .personagem-frog .personagem-sprite {
+    height: 102px;
+}
+
+.destaque-slide .personagem-sombra {
+    width: 72px;
+    height: 16px;
 }
 
 .game-card h3 {
