@@ -149,7 +149,8 @@ function alternarSenha(id, botao) {
     if (!input) return;
     const mostrando = input.type === 'text';
     input.type = mostrando ? 'password' : 'text';
-    botao.textContent = mostrando ? '👁️' : '🙈';
+    const usoIcone = botao.querySelector('use');
+    if (usoIcone) usoIcone.setAttribute('href', mostrando ? '#icon-eye' : '#icon-eye-off');
     botao.setAttribute('aria-label', mostrando ? 'Mostrar senha' : 'Ocultar senha');
 }
 
@@ -402,17 +403,21 @@ function atualizarRanking() {
     const lista = document.getElementById('listaRanking');
     lista.innerHTML = '';
 
-    const medalhas = ['🥇', '🥈', '🥉'];
+    const classesMedalha = ['medalha-ouro', 'medalha-prata', 'medalha-bronze'];
 
     jogadores.forEach((jogador, index) => {
         const li = document.createElement('li');
         if (jogador.nome === nomeAtual) li.classList.add('voce');
 
-        const posicao = index < 3 ? medalhas[index] : `${index + 1}º`;
-
         const spanPos = document.createElement('span');
         spanPos.className = 'ranking-pos';
-        spanPos.textContent = posicao;
+
+        if (index < 3) {
+            spanPos.classList.add(classesMedalha[index]);
+            spanPos.innerHTML = '<svg class="icone icone-medalha" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-medal"></use></svg>';
+        } else {
+            spanPos.textContent = `${index + 1}º`;
+        }
 
         const spanNome = document.createElement('span');
         spanNome.className = 'ranking-nome';
@@ -768,7 +773,7 @@ function renderizarComentarios(jogoId) {
             const excluir = document.createElement('button');
             excluir.type = 'button';
             excluir.className = 'comentario-excluir';
-            excluir.textContent = '🗑️ Excluir';
+            excluir.innerHTML = '<svg class="icone icone-inline icone-pequeno" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-trash"></use></svg> Excluir';
             excluir.addEventListener('click', () => excluirComentario(jogoId, comentario.id));
             li.appendChild(excluir);
         }
