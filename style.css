@@ -1026,6 +1026,54 @@ nav a:hover {
     transform-origin: center;
 }
 
+.personagem-soldado .luz-peito {
+    animation: personagem-visor 1.3s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-frog .corpo-frog {
+    animation: personagem-pular-squash 1.5s cubic-bezier(.45,0,.55,1) infinite;
+    transform-box: fill-box;
+    transform-origin: bottom center;
+}
+
+.personagem-frog .olho-frog {
+    animation: personagem-piscar 3.6s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-frog .braco-espada {
+    animation: personagem-balancar 2.2s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: 96px 60px;
+}
+
+.personagem-frog .brilho-espada {
+    animation: personagem-antena-blink 1.4s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-explorador .corpo-explorador {
+    animation: personagem-explorar-idle 2.6s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: bottom center;
+}
+
+.personagem-explorador .olho-explorador {
+    animation: personagem-piscar 4s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.personagem-explorador .braco-facao {
+    animation: personagem-balancar 2.8s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: 94px 52px;
+}
+
 .personagem-card--sprite {
     position: relative;
     align-items: flex-end;
