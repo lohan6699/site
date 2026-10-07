@@ -10,11 +10,7 @@
 </head>
 <body>
 
-    <!-- Biblioteca de ícones SVG reutilizados no site via <use href="#icon-nome">.
-         Ficam escondidos aqui e são "chamados" onde precisar, então o
-         visual fica consistente em qualquer sistema/navegador (ao
-         contrário de emojis, que mudam de aparência dependendo do
-         dispositivo). -->
+    <!-- Biblioteca de ícones SVG reutilizados no site via <use href="#icon-nome">. -->
     <svg class="sr-only" aria-hidden="true" focusable="false">
         <symbol id="icon-gamepad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17.5 6h-11A4.5 4.5 0 0 0 2 10.5v3A4.5 4.5 0 0 0 6.5 18c1 0 1.8-.4 2.5-1l1.3-1.3a1 1 0 0 1 .7-.3h3a1 1 0 0 1 .7.3L16 17c.7.6 1.5 1 2.5 1A4.5 4.5 0 0 0 23 13.5v-3A4.5 4.5 0 0 0 18.5 6h-1z"/>
@@ -189,7 +185,7 @@
                 <div class="busca-wrap">
                     <svg class="icone icone-busca" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-search"></use></svg>
                     <label for="buscaJogo" class="sr-only">Buscar jogo</label>
-                    <input type="search" id="buscaJogo" placeholder="Buscar jogo..." oninput="filtrarJogos(this.value)">
+                    <input type="search" id="buscaJogo" placeholder="Buscar jogo ou tag..." oninput="filtrarJogos(this.value)">
                 </div>
                 <div class="categoria-wrap">
                     <label for="filtroCategoria">Categoria:</label>
@@ -216,7 +212,7 @@
             <div class="games-grid" id="gamesGrid">
 
                 <!-- Super Jogo da Velha -->
-                <div class="game-card destaque" data-jogo="velha" data-nota="4.8" data-contagem="212" data-categoria="estrategia">
+                <div class="game-card destaque" data-jogo="velha" data-nota="4.8" data-contagem="212" data-categoria="estrategia" data-tags="Tabuleiro,9 tabuleiros,2 jogadores">
                     <div class="personagem-card personagem-velha" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
@@ -279,7 +275,7 @@
                 </div>
 
                 <!-- Frog Quest — agora em destaque -->
-                <div class="game-card destaque" data-jogo="frogquest" data-nota="4.5" data-contagem="3" data-categoria="plataforma">
+                <div class="game-card destaque" data-jogo="frogquest" data-nota="4.5" data-contagem="3" data-categoria="plataforma" data-tags="2D,Pulo duplo,Em dev">
                     <div class="personagem-card personagem-frog" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
@@ -335,7 +331,7 @@
                 </div>
 
                 <!-- Amazônia — agora em destaque -->
-                <div class="game-card destaque" data-jogo="amazonia" data-nota="4.5" data-contagem="3" data-categoria="sobrevivencia">
+                <div class="game-card destaque" data-jogo="amazonia" data-nota="4.5" data-contagem="3" data-categoria="sobrevivencia" data-tags="Craft,Floresta,1–2 jogadores">
                     <div class="personagem-card personagem-explorador" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
@@ -385,7 +381,7 @@
                 </div>
 
                 <!-- Phantom FPS — agora em destaque -->
-                <div class="game-card destaque" data-jogo="phantomfps" data-nota="4.5" data-contagem="3" data-categoria="tiro">
+                <div class="game-card destaque" data-jogo="phantomfps" data-nota="4.5" data-contagem="3" data-categoria="tiro" data-tags="FPS,1ª pessoa,Missões">
                     <div class="personagem-card personagem-soldado" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 130 120" xmlns="http://www.w3.org/2000/svg">
@@ -440,7 +436,7 @@
                 </div>
 
                 <!-- Caça-Palavras Neon -->
-                <div class="game-card" data-jogo="cacapalavras" data-nota="4.5" data-contagem="3" data-categoria="palavras">
+                <div class="game-card" data-jogo="cacapalavras" data-nota="4.5" data-contagem="3" data-categoria="palavras" data-tags="Ranking por tempo,3 níveis">
                     <div class="personagem-card personagem-cacapalavras" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
@@ -537,7 +533,7 @@
                 </div>
 
                 <!-- Super Matemática — agora em destaque -->
-                <div class="game-card destaque" data-jogo="matematica" data-nota="4.5" data-contagem="3" data-categoria="matematica">
+                <div class="game-card destaque" data-jogo="matematica" data-nota="4.5" data-contagem="3" data-categoria="matematica" data-tags="Contra o relógio,Cálculo mental">
                     <div class="personagem-card personagem-matematica" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
@@ -598,6 +594,46 @@
                     <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
                     <button type="button" class="btn-comentarios" data-jogo-comentarios="matematica"><svg class="icone icone-inline" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-message"></use></svg> Comentários <span class="comentarios-contagem"></span></button>
                     <div class="comentarios-box escondido" data-comentarios-box="matematica"></div>
+                </div>
+
+                <!-- VOID COMMAND — novo -->
+                <div class="game-card destaque" data-jogo="voidcommand" data-nota="0" data-contagem="0" data-categoria="tiro" data-tags="Espaço,Arcade,1–2 jogadores,Gamepad,Novo">
+                    <div class="personagem-card personagem-void" aria-hidden="true">
+                        <div class="personagem-palco"></div>
+                        <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="gradNaveVoid" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#e0e7ff"/>
+                                    <stop offset="100%" stop-color="#6366f1"/>
+                                </linearGradient>
+                                <radialGradient id="gradCabineVoid" cx="35%" cy="30%" r="75%">
+                                    <stop offset="0%" stop-color="#67e8f9"/>
+                                    <stop offset="100%" stop-color="#0e7490"/>
+                                </radialGradient>
+                            </defs>
+                            <circle class="estrela-void" cx="20" cy="20" r="1.6" fill="#fff"/>
+                            <circle class="estrela-void" cx="118" cy="30" r="1.3" fill="#fff" style="animation-delay:.6s"/>
+                            <circle class="estrela-void" cx="28" cy="70" r="1.2" fill="#fff" style="animation-delay:1.1s"/>
+                            <circle class="estrela-void" cx="116" cy="74" r="1.6" fill="#fff" style="animation-delay:.3s"/>
+                            <g class="laser-void"><rect x="68.5" y="4" width="3" height="10" rx="1.5" fill="#f87171"/></g>
+                            <g class="nave-void">
+                                <path class="chama-void" d="M62 74 L70 98 L78 74 z" fill="#fbbf24"/>
+                                <path d="M44 70 L26 84 L54 74 z" fill="#818cf8" stroke="#312e81" stroke-width="1.2"/>
+                                <path d="M96 70 L114 84 L86 74 z" fill="#818cf8" stroke="#312e81" stroke-width="1.2"/>
+                                <path d="M70 14 L96 70 L84 66 L70 76 L56 66 L44 70 z" fill="url(#gradNaveVoid)" stroke="#312e81" stroke-width="1.5"/>
+                                <ellipse cx="70" cy="42" rx="7" ry="12" fill="url(#gradCabineVoid)"/>
+                                <circle cx="67.5" cy="37" r="1.6" fill="#e0f7fa" opacity="0.8"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <h3>Void Command</h3>
+                    <p>Shooter espacial arcade: defenda a base em ondas, desbloqueie skins, suba no ranking global e jogue sozinho ou em dupla.</p>
+                    <div class="estrelas-media"></div>
+                    <a href="https://tiny-sunburst-04b85a.netlify.app" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="voidcommand">Jogar Agora</a>
+                    <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="voidcommand"></span></div>
+                    <div class="selo-jogado" hidden>✓ Jogado (+15)</div>
+                    <button type="button" class="btn-comentarios" data-jogo-comentarios="voidcommand"><svg class="icone icone-inline" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-message"></use></svg> Comentários <span class="comentarios-contagem"></span></button>
+                    <div class="comentarios-box escondido" data-comentarios-box="voidcommand"></div>
                 </div>
 
             </div>
