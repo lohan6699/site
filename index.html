@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Portal de Jogos — jogue, ganhe pontos e suba no ranking.">
+    <meta name="theme-color" content="#0f0c29">
     <title>Portal de Jogos</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23a78bfa'/%3E%3Cstop offset='100%25' stop-color='%2334d399'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23g)' d='M17.5 6h-11A4.5 4.5 0 0 0 2 10.5v3A4.5 4.5 0 0 0 6.5 18c1 0 1.8-.4 2.5-1l1.3-1.3a1 1 0 0 1 .7-.3h3a1 1 0 0 1 .7.3L16 17c.7.6 1.5 1 2.5 1A4.5 4.5 0 0 0 23 13.5v-3A4.5 4.5 0 0 0 18.5 6h-1z'/%3E%3Ccircle cx='8' cy='12' r='1.1' fill='%230f0c29'/%3E%3Ccircle cx='6' cy='12' r='1.1' fill='%230f0c29'/%3E%3Ccircle cx='16' cy='10.5' r='1' fill='%230f0c29'/%3E%3Ccircle cx='18.5' cy='13' r='1' fill='%230f0c29'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Biblioteca de ícones SVG reutilizados no site via <use href="#icon-nome">. -->
+    <a class="pular" href="#jogos">Pular para os jogos</a>
+
     <svg class="sr-only" aria-hidden="true" focusable="false">
         <symbol id="icon-gamepad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17.5 6h-11A4.5 4.5 0 0 0 2 10.5v3A4.5 4.5 0 0 0 6.5 18c1 0 1.8-.4 2.5-1l1.3-1.3a1 1 0 0 1 .7-.3h3a1 1 0 0 1 .7.3L16 17c.7.6 1.5 1 2.5 1A4.5 4.5 0 0 0 23 13.5v-3A4.5 4.5 0 0 0 18.5 6h-1z"/>
@@ -64,7 +66,6 @@
 
     <div id="estrelas" aria-hidden="true"></div>
 
-    <!-- TELA DE SPLASH (carregamento) -->
     <div id="telaSplash">
         <div class="splash-conteudo">
             <div class="splash-logo" aria-hidden="true"><svg class="icone" viewBox="0 0 24 24"><use href="#icon-gamepad"></use></svg></div>
@@ -74,74 +75,55 @@
         </div>
     </div>
 
-    <!-- TELA DE LOGIN / CRIAR CONTA -->
     <div id="telaLogin">
         <div class="login-box">
             <h2><svg class="icone icone-inline" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-gamepad"></use></svg> Portal de Jogos</h2>
-
             <div class="login-abas" role="tablist">
                 <button type="button" class="aba-btn ativa" id="abaEntrarBtn" role="tab" aria-selected="true" aria-controls="formEntrar" onclick="mostrarAba('entrar')">Entrar</button>
                 <button type="button" class="aba-btn" id="abaCriarBtn" role="tab" aria-selected="false" aria-controls="formCriar" onclick="mostrarAba('criar')">Criar Conta</button>
             </div>
-
-            <!-- FORM: ENTRAR -->
             <form id="formEntrar" class="login-form" onsubmit="return fazerLogin(event)">
                 <label for="loginUsuario" class="sr-only">Usuário</label>
                 <input type="text" id="loginUsuario" placeholder="Usuário" maxlength="15" autocomplete="username" autofocus>
-
                 <label for="loginSenha" class="sr-only">Senha</label>
                 <div class="campo-senha">
                     <input type="password" id="loginSenha" placeholder="Senha" autocomplete="current-password">
                     <button type="button" class="btn-olho" onclick="alternarSenha('loginSenha', this)" aria-label="Mostrar senha"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-eye"></use></svg></button>
                 </div>
-
                 <div class="erro-login" id="erroLogin" role="alert"></div>
                 <button type="submit" class="btn-entrar">Entrar</button>
             </form>
-
-            <!-- FORM: CRIAR CONTA -->
             <form id="formCriar" class="login-form escondido" onsubmit="return criarConta(event)">
                 <label for="criarUsuario" class="sr-only">Escolha um usuário</label>
                 <input type="text" id="criarUsuario" placeholder="Escolha um usuário" maxlength="15" autocomplete="username">
-
                 <label for="criarSenha" class="sr-only">Crie uma senha</label>
                 <div class="campo-senha">
                     <input type="password" id="criarSenha" placeholder="Crie uma senha" autocomplete="new-password">
                     <button type="button" class="btn-olho" onclick="alternarSenha('criarSenha', this)" aria-label="Mostrar senha"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-eye"></use></svg></button>
                 </div>
-
                 <label for="criarSenha2" class="sr-only">Confirme a senha</label>
                 <div class="campo-senha">
                     <input type="password" id="criarSenha2" placeholder="Confirme a senha" autocomplete="new-password">
                     <button type="button" class="btn-olho" onclick="alternarSenha('criarSenha2', this)" aria-label="Mostrar senha"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-eye"></use></svg></button>
                 </div>
-
                 <div class="erro-login" id="erroCriar" role="alert"></div>
                 <button type="submit" class="btn-entrar">Criar Conta</button>
             </form>
-
-            <p class="login-nota">🔒 Sua conta e seu progresso ficam salvos neste navegador.</p>
+            <p class="login-nota">Sua conta e seu progresso ficam salvos neste navegador.</p>
         </div>
     </div>
 
-    <!-- SITE PRINCIPAL -->
     <div id="sitePrincipal">
-
         <div class="mensagem-pontos" id="mensagemPontos" role="status" aria-live="polite"></div>
-
         <header>
             <div class="container header-content">
                 <div class="logo"><svg class="icone icone-inline" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-gamepad"></use></svg> Portal de Jogos</div>
-
                 <div class="user-info">
                     <div class="nome-usuario" id="nomeExibido">Jogador</div>
-                    <div class="score-box">
-                        Pontos: <span id="pontuacao">0</span>
-                    </div>
+                    <div class="score-box">Pontos: <span id="pontuacao">0</span></div>
                     <button class="btn-resetar" onclick="resetarProgresso()" title="Zera seus pontos e jogos jogados, mas mantém você logado">Resetar</button>
                     <button class="btn-sair" onclick="fazerLogout()">Sair</button>
                 </div>
-
                 <nav>
                     <a href="#">Início</a>
                     <a href="#jogos">Jogos</a>
@@ -150,20 +132,21 @@
         </header>
 
         <main class="container">
-
             <section class="hero">
                 <h1>Bem-vindo, <span id="nomeHero">Jogador</span>!</h1>
                 <p>Clique nos jogos para ganhar pontos e subir no ranking!</p>
-
+                <div class="hero-stats" id="heroStats">
+                    <div class="hero-stat"><strong id="statJogos">0</strong><span>jogos</span></div>
+                    <div class="hero-stat"><strong>+15</strong><span>ao jogar</span></div>
+                    <div class="hero-stat"><strong>+5</strong><span>ao avaliar</span></div>
+                    <div class="hero-stat"><strong>+5</strong><span>ao comentar</span></div>
+                </div>
                 <div class="progresso-wrap">
                     <div class="progresso-label" id="progressoLabel">Carregando progresso...</div>
-                    <div class="progresso-barra">
-                        <div class="progresso-fill" id="progressoFill"></div>
-                    </div>
+                    <div class="progresso-barra"><div class="progresso-fill" id="progressoFill"></div></div>
                 </div>
-
                 <div class="botoes-hero">
-                    <a href="#jogos" class="btn-principal">Ver Jogos ↓</a>
+                    <a href="#jogos" class="btn-principal">Ver Jogos</a>
                     <button class="btn-principal btn-ranking" onclick="mostrarRanking()"><svg class="icone icone-inline" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-trophy"></use></svg> Ver Ranking</button>
                     <button class="btn-principal btn-ranking" onclick="abrirModalSugerir()"><svg class="icone icone-inline" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus-circle"></use></svg> Sugerir um Jogo</button>
                 </div>
@@ -181,11 +164,21 @@
 
             <h2 class="section-title" id="jogos">Jogos Populares</h2>
 
+            <div class="pills-wrap" id="pillsCategoria" role="tablist" aria-label="Filtrar por categoria">
+                <button type="button" class="pill ativa" data-cat="todas" role="tab" aria-selected="true">Todas</button>
+                <button type="button" class="pill" data-cat="estrategia" role="tab" aria-selected="false">Estratégia</button>
+                <button type="button" class="pill" data-cat="plataforma" role="tab" aria-selected="false">Plataforma</button>
+                <button type="button" class="pill" data-cat="sobrevivencia" role="tab" aria-selected="false">Sobrevivência</button>
+                <button type="button" class="pill" data-cat="tiro" role="tab" aria-selected="false">Tiro</button>
+                <button type="button" class="pill" data-cat="palavras" role="tab" aria-selected="false">Palavras</button>
+                <button type="button" class="pill" data-cat="matematica" role="tab" aria-selected="false">Matemática</button>
+            </div>
+
             <div class="barra-filtros">
                 <div class="busca-wrap">
                     <svg class="icone icone-busca" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-search"></use></svg>
                     <label for="buscaJogo" class="sr-only">Buscar jogo</label>
-                    <input type="search" id="buscaJogo" placeholder="Buscar jogo ou tag..." oninput="filtrarJogos(this.value)">
+                    <input type="search" id="buscaJogo" placeholder="Buscar jogo, criador ou tag..." oninput="filtrarJogos(this.value)">
                 </div>
                 <div class="categoria-wrap">
                     <label for="filtroCategoria">Categoria:</label>
@@ -211,27 +204,14 @@
 
             <div class="games-grid" id="gamesGrid">
 
-                <!-- Super Jogo da Velha -->
                 <div class="game-card destaque" data-jogo="velha" data-nota="4.8" data-contagem="212" data-categoria="estrategia" data-tags="Tabuleiro,9 tabuleiros,2 jogadores">
                     <div class="personagem-card personagem-velha" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <radialGradient id="gradX" cx="35%" cy="30%" r="75%">
-                                    <stop offset="0%" stop-color="#a78bfa"/>
-                                    <stop offset="100%" stop-color="#6d28d9"/>
-                                </radialGradient>
-                                <radialGradient id="gradO" cx="35%" cy="30%" r="75%">
-                                    <stop offset="0%" stop-color="#6ee7b7"/>
-                                    <stop offset="100%" stop-color="#059669"/>
-                                </radialGradient>
-                                <filter id="glowVs" x="-60%" y="-60%" width="220%" height="220%">
-                                    <feGaussianBlur stdDeviation="2.2" result="blur"/>
-                                    <feMerge>
-                                        <feMergeNode in="blur"/>
-                                        <feMergeNode in="SourceGraphic"/>
-                                    </feMerge>
-                                </filter>
+                                <radialGradient id="gradX" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></radialGradient>
+                                <radialGradient id="gradO" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#6ee7b7"/><stop offset="100%" stop-color="#059669"/></radialGradient>
+                                <filter id="glowVs" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
                             </defs>
                             <ellipse class="sombra-x" cx="35" cy="90" rx="20" ry="6" fill="rgba(0,0,0,0.25)"/>
                             <ellipse class="sombra-o" cx="105" cy="90" rx="20" ry="6" fill="rgba(0,0,0,0.25)"/>
@@ -274,20 +254,13 @@
                     <div class="comentarios-box escondido" data-comentarios-box="velha"></div>
                 </div>
 
-                <!-- Frog Quest — agora em destaque -->
                 <div class="game-card destaque" data-jogo="frogquest" data-nota="4.5" data-contagem="3" data-categoria="plataforma" data-tags="2D,Pulo duplo,Em dev">
                     <div class="personagem-card personagem-frog" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <radialGradient id="gradFrogBody" cx="35%" cy="25%" r="80%">
-                                    <stop offset="0%" stop-color="#86efac"/>
-                                    <stop offset="100%" stop-color="#16a34a"/>
-                                </radialGradient>
-                                <linearGradient id="gradHeadband" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="0%" stop-color="#f87171"/>
-                                    <stop offset="100%" stop-color="#b91c1c"/>
-                                </linearGradient>
+                                <radialGradient id="gradFrogBody" cx="35%" cy="25%" r="80%"><stop offset="0%" stop-color="#86efac"/><stop offset="100%" stop-color="#16a34a"/></radialGradient>
+                                <linearGradient id="gradHeadband" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#f87171"/><stop offset="100%" stop-color="#b91c1c"/></linearGradient>
                             </defs>
                             <ellipse cx="70" cy="90" rx="26" ry="6" fill="rgba(0,0,0,0.25)"/>
                             <g class="corpo-frog">
@@ -321,7 +294,7 @@
                     <div class="game-criador">por Pedro</div>
                     <h3>Frog Quest</h3>
                     <p>Plataforma 2D com um sapo: pulo duplo, língua comprida e 10 níveis. Ainda em desenvolvimento.</p>
-                    <span class="selo-dev">🚧 Em desenvolvimento</span>
+                    <span class="selo-dev">Em desenvolvimento</span>
                     <div class="estrelas-media"></div>
                     <a href="https://p3drico.itch.io/frog-quest" target="_blank" rel="noopener noreferrer" class="btn-jogar" data-jogo-btn="frogquest">Jogar Agora</a>
                     <div class="sua-nota">Sua nota:<span class="estrelas-interativas" data-jogo-avaliar="frogquest"></span></div>
@@ -330,20 +303,13 @@
                     <div class="comentarios-box escondido" data-comentarios-box="frogquest"></div>
                 </div>
 
-                <!-- Amazônia — agora em destaque -->
                 <div class="game-card destaque" data-jogo="amazonia" data-nota="4.5" data-contagem="3" data-categoria="sobrevivencia" data-tags="Craft,Floresta,1–2 jogadores">
                     <div class="personagem-card personagem-explorador" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <linearGradient id="gradCamisa" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#a3e635"/>
-                                    <stop offset="100%" stop-color="#4d7c0f"/>
-                                </linearGradient>
-                                <linearGradient id="gradChapeu" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#fcd34d"/>
-                                    <stop offset="100%" stop-color="#b45309"/>
-                                </linearGradient>
+                                <linearGradient id="gradCamisa" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#a3e635"/><stop offset="100%" stop-color="#4d7c0f"/></linearGradient>
+                                <linearGradient id="gradChapeu" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fcd34d"/><stop offset="100%" stop-color="#b45309"/></linearGradient>
                             </defs>
                             <ellipse cx="68" cy="90" rx="22" ry="6" fill="rgba(0,0,0,0.25)"/>
                             <g class="corpo-explorador">
@@ -380,20 +346,13 @@
                     <div class="comentarios-box escondido" data-comentarios-box="amazonia"></div>
                 </div>
 
-                <!-- Phantom FPS — agora em destaque -->
                 <div class="game-card destaque" data-jogo="phantomfps" data-nota="4.5" data-contagem="3" data-categoria="tiro" data-tags="FPS,1ª pessoa,Missões">
                     <div class="personagem-card personagem-soldado" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 130 120" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <linearGradient id="gradArmadura" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#374151"/>
-                                    <stop offset="100%" stop-color="#111827"/>
-                                </linearGradient>
-                                <radialGradient id="gradVisor" cx="40%" cy="35%" r="70%">
-                                    <stop offset="0%" stop-color="#67e8f9"/>
-                                    <stop offset="100%" stop-color="#0e7490"/>
-                                </radialGradient>
+                                <linearGradient id="gradArmadura" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#374151"/><stop offset="100%" stop-color="#111827"/></linearGradient>
+                                <radialGradient id="gradVisor" cx="40%" cy="35%" r="70%"><stop offset="0%" stop-color="#67e8f9"/><stop offset="100%" stop-color="#0e7490"/></radialGradient>
                             </defs>
                             <ellipse cx="60" cy="108" rx="28" ry="7" fill="rgba(0,0,0,0.28)"/>
                             <g class="corpo-soldado">
@@ -435,81 +394,29 @@
                     <div class="comentarios-box escondido" data-comentarios-box="phantomfps"></div>
                 </div>
 
-                <!-- Caça-Palavras Neon -->
                 <div class="game-card" data-jogo="cacapalavras" data-nota="4.5" data-contagem="3" data-categoria="palavras" data-tags="Ranking por tempo,3 níveis">
                     <div class="personagem-card personagem-cacapalavras" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <radialGradient id="gradLupa" cx="35%" cy="30%" r="75%">
-                                    <stop offset="0%" stop-color="#67e8f9"/>
-                                    <stop offset="100%" stop-color="#0e7490"/>
-                                </radialGradient>
-                                <filter id="glowLupa" x="-80%" y="-80%" width="260%" height="260%">
-                                    <feGaussianBlur stdDeviation="2.4" result="blur"/>
-                                    <feMerge>
-                                        <feMergeNode in="blur"/>
-                                        <feMergeNode in="SourceGraphic"/>
-                                    </feMerge>
-                                </filter>
+                                <radialGradient id="gradLupa" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#67e8f9"/><stop offset="100%" stop-color="#0e7490"/></radialGradient>
+                                <filter id="glowLupa" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
                             </defs>
-
                             <g class="grupo-cp">
-                                <!-- grade de letras -->
                                 <g class="grade-cp">
-                                    <g class="letra-destaque">
-                                        <rect x="14" y="16" width="24" height="22" rx="5" fill="rgba(52,211,153,0.28)" stroke="#34d399" stroke-width="1.5"/>
-                                        <text x="26" y="32" font-size="13" font-weight="800" fill="#a7f3d0" text-anchor="middle">S</text>
-                                    </g>
-                                    <g class="letra-normal">
-                                        <rect x="42" y="16" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-                                        <text x="54" y="32" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">T</text>
-                                    </g>
-                                    <g class="letra-normal">
-                                        <rect x="70" y="16" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-                                        <text x="82" y="32" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">R</text>
-                                    </g>
-                                    <g class="letra-normal">
-                                        <rect x="98" y="16" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-                                        <text x="110" y="32" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">A</text>
-                                    </g>
-
-                                    <g class="letra-normal">
-                                        <rect x="14" y="42" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-                                        <text x="26" y="58" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">X</text>
-                                    </g>
-                                    <g class="letra-destaque" style="animation-delay: 0.4s">
-                                        <rect x="42" y="42" width="24" height="22" rx="5" fill="rgba(52,211,153,0.28)" stroke="#34d399" stroke-width="1.5"/>
-                                        <text x="54" y="58" font-size="13" font-weight="800" fill="#a7f3d0" text-anchor="middle">O</text>
-                                    </g>
-                                    <g class="letra-normal">
-                                        <rect x="70" y="42" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-                                        <text x="82" y="58" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">C</text>
-                                    </g>
-                                    <g class="letra-normal">
-                                        <rect x="98" y="42" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-                                        <text x="110" y="58" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">K</text>
-                                    </g>
-
-                                    <g class="letra-normal">
-                                        <rect x="14" y="68" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-                                        <text x="26" y="84" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">E</text>
-                                    </g>
-                                    <g class="letra-normal">
-                                        <rect x="42" y="68" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-                                        <text x="54" y="84" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">N</text>
-                                    </g>
-                                    <g class="letra-destaque" style="animation-delay: 0.8s">
-                                        <rect x="70" y="68" width="24" height="22" rx="5" fill="rgba(52,211,153,0.28)" stroke="#34d399" stroke-width="1.5"/>
-                                        <text x="82" y="84" font-size="13" font-weight="800" fill="#a7f3d0" text-anchor="middle">L</text>
-                                    </g>
-                                    <g class="letra-normal">
-                                        <rect x="98" y="68" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-                                        <text x="110" y="84" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">M</text>
-                                    </g>
+                                    <g class="letra-destaque"><rect x="14" y="16" width="24" height="22" rx="5" fill="rgba(52,211,153,0.28)" stroke="#34d399" stroke-width="1.5"/><text x="26" y="32" font-size="13" font-weight="800" fill="#a7f3d0" text-anchor="middle">S</text></g>
+                                    <g class="letra-normal"><rect x="42" y="16" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><text x="54" y="32" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">T</text></g>
+                                    <g class="letra-normal"><rect x="70" y="16" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><text x="82" y="32" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">R</text></g>
+                                    <g class="letra-normal"><rect x="98" y="16" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><text x="110" y="32" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">A</text></g>
+                                    <g class="letra-normal"><rect x="14" y="42" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><text x="26" y="58" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">X</text></g>
+                                    <g class="letra-destaque" style="animation-delay: 0.4s"><rect x="42" y="42" width="24" height="22" rx="5" fill="rgba(52,211,153,0.28)" stroke="#34d399" stroke-width="1.5"/><text x="54" y="58" font-size="13" font-weight="800" fill="#a7f3d0" text-anchor="middle">O</text></g>
+                                    <g class="letra-normal"><rect x="70" y="42" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><text x="82" y="58" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">C</text></g>
+                                    <g class="letra-normal"><rect x="98" y="42" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><text x="110" y="58" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">K</text></g>
+                                    <g class="letra-normal"><rect x="14" y="68" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><text x="26" y="84" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">E</text></g>
+                                    <g class="letra-normal"><rect x="42" y="68" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><text x="54" y="84" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">N</text></g>
+                                    <g class="letra-destaque" style="animation-delay: 0.8s"><rect x="70" y="68" width="24" height="22" rx="5" fill="rgba(52,211,153,0.28)" stroke="#34d399" stroke-width="1.5"/><text x="82" y="84" font-size="13" font-weight="800" fill="#a7f3d0" text-anchor="middle">L</text></g>
+                                    <g class="letra-normal"><rect x="98" y="68" width="24" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><text x="110" y="84" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">M</text></g>
                                 </g>
-
-                                <!-- lupa que "escaneia" a grade -->
                                 <g class="lupa-cp" transform="translate(100,30)" filter="url(#glowLupa)">
                                     <rect class="cabo-cp" x="9" y="20" width="26" height="7" rx="3.5" fill="#334155" transform="rotate(42)"/>
                                     <circle class="lente-cp" cx="0" cy="0" r="16" fill="url(#gradLupa)" stroke="#083344" stroke-width="2"/>
@@ -532,53 +439,30 @@
                     <div class="comentarios-box escondido" data-comentarios-box="cacapalavras"></div>
                 </div>
 
-                <!-- Super Matemática — agora em destaque -->
                 <div class="game-card destaque" data-jogo="matematica" data-nota="4.5" data-contagem="3" data-categoria="matematica" data-tags="Contra o relógio,Cálculo mental">
                     <div class="personagem-card personagem-matematica" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <linearGradient id="gradCalc" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#818cf8"/>
-                                    <stop offset="100%" stop-color="#4338ca"/>
-                                </linearGradient>
-                                <radialGradient id="gradTelaCalc" cx="35%" cy="30%" r="75%">
-                                    <stop offset="0%" stop-color="#a7f3d0"/>
-                                    <stop offset="100%" stop-color="#059669"/>
-                                </radialGradient>
+                                <linearGradient id="gradCalc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#4338ca"/></linearGradient>
+                                <radialGradient id="gradTelaCalc" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#a7f3d0"/><stop offset="100%" stop-color="#059669"/></radialGradient>
                             </defs>
-
                             <ellipse cx="70" cy="90" rx="26" ry="6" fill="rgba(0,0,0,0.25)"/>
-
-                            <!-- símbolos flutuando ao redor -->
-                            <g class="simbolo-flutuante simbolo-1">
-                                <text x="16" y="28" font-size="17" font-weight="800" fill="#fbbf24" text-anchor="middle">+</text>
-                            </g>
-                            <g class="simbolo-flutuante simbolo-2">
-                                <text x="122" y="24" font-size="17" font-weight="800" fill="#f472b6" text-anchor="middle">×</text>
-                            </g>
-                            <g class="simbolo-flutuante simbolo-3">
-                                <text x="122" y="80" font-size="17" font-weight="800" fill="#60a5fa" text-anchor="middle">÷</text>
-                            </g>
-                            <g class="simbolo-flutuante simbolo-4">
-                                <text x="16" y="80" font-size="17" font-weight="800" fill="#34d399" text-anchor="middle">−</text>
-                            </g>
-
+                            <g class="simbolo-flutuante simbolo-1"><text x="16" y="28" font-size="17" font-weight="800" fill="#fbbf24" text-anchor="middle">+</text></g>
+                            <g class="simbolo-flutuante simbolo-2"><text x="122" y="24" font-size="17" font-weight="800" fill="#f472b6" text-anchor="middle">×</text></g>
+                            <g class="simbolo-flutuante simbolo-3"><text x="122" y="80" font-size="17" font-weight="800" fill="#60a5fa" text-anchor="middle">÷</text></g>
+                            <g class="simbolo-flutuante simbolo-4"><text x="16" y="80" font-size="17" font-weight="800" fill="#34d399" text-anchor="middle">−</text></g>
                             <g class="corpo-calc">
                                 <rect x="67" y="13" width="6" height="11" rx="3" fill="#c7d2fe"/>
                                 <circle class="antena-luz-mat" cx="70" cy="12" r="3.5" fill="#fbbf24"/>
-
                                 <rect x="45" y="24" width="50" height="60" rx="12" fill="url(#gradCalc)" stroke="#312e81" stroke-width="1.5"/>
-
                                 <rect x="51" y="31" width="38" height="15" rx="4" fill="url(#gradTelaCalc)"/>
                                 <text x="70" y="42" font-size="9" font-weight="800" fill="#052e2b" text-anchor="middle">7×6=42</text>
-
                                 <circle class="olho-mat" cx="60" cy="57" r="3.4" fill="#e0e7ff"/>
                                 <circle class="olho-mat" cx="80" cy="57" r="3.4" fill="#e0e7ff"/>
                                 <ellipse cx="53" cy="62" rx="3.5" ry="2.2" fill="#fca5a5" opacity="0.55"/>
                                 <ellipse cx="87" cy="62" rx="3.5" ry="2.2" fill="#fca5a5" opacity="0.55"/>
                                 <path d="M61 65 q9 6 18 0" stroke="#e0e7ff" stroke-width="2" fill="none" stroke-linecap="round"/>
-
                                 <rect x="51" y="71" width="11" height="8" rx="2" fill="rgba(255,255,255,0.18)"/>
                                 <rect x="64.5" y="71" width="11" height="8" rx="2" fill="rgba(255,255,255,0.18)"/>
                                 <rect x="78" y="71" width="11" height="8" rx="2" fill="rgba(255,255,255,0.18)"/>
@@ -596,20 +480,13 @@
                     <div class="comentarios-box escondido" data-comentarios-box="matematica"></div>
                 </div>
 
-                <!-- VOID COMMAND — novo -->
                 <div class="game-card destaque" data-jogo="voidcommand" data-nota="0" data-contagem="0" data-categoria="tiro" data-tags="Espaço,Arcade,1–2 jogadores,Gamepad,Novo">
                     <div class="personagem-card personagem-void" aria-hidden="true">
                         <div class="personagem-palco"></div>
                         <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <linearGradient id="gradNaveVoid" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#e0e7ff"/>
-                                    <stop offset="100%" stop-color="#6366f1"/>
-                                </linearGradient>
-                                <radialGradient id="gradCabineVoid" cx="35%" cy="30%" r="75%">
-                                    <stop offset="0%" stop-color="#67e8f9"/>
-                                    <stop offset="100%" stop-color="#0e7490"/>
-                                </radialGradient>
+                                <linearGradient id="gradNaveVoid" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e0e7ff"/><stop offset="100%" stop-color="#6366f1"/></linearGradient>
+                                <radialGradient id="gradCabineVoid" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#67e8f9"/><stop offset="100%" stop-color="#0e7490"/></radialGradient>
                             </defs>
                             <circle class="estrela-void" cx="20" cy="20" r="1.6" fill="#fff"/>
                             <circle class="estrela-void" cx="118" cy="30" r="1.3" fill="#fff" style="animation-delay:.6s"/>
@@ -626,6 +503,7 @@
                             </g>
                         </svg>
                     </div>
+                    <div class="game-criador">novo no portal</div>
                     <h3>Void Command</h3>
                     <p>Shooter espacial arcade: defenda a base em ondas, desbloqueie skins, suba no ranking global e jogue sozinho ou em dupla.</p>
                     <div class="estrelas-media"></div>
@@ -638,23 +516,26 @@
 
             </div>
 
-            <p class="sem-resultados" id="semResultados">Nenhum jogo encontrado para essa busca.</p>
-
+            <p class="resultado-contagem" id="resultadoContagem" aria-live="polite"></p>
+            <p class="sem-resultados" id="semResultados">Nenhum jogo encontrado. Tente outra palavra ou limpe os filtros.</p>
+            <p class="sem-resultados-acao escondido" id="limparFiltrosWrap"><button type="button" class="btn-limpar" onclick="limparFiltros()">Limpar filtros</button></p>
         </main>
 
         <footer>
             <div class="container">
                 <p>© 2026 Portal de Jogos • Feito com 💜</p>
+                <p class="footer-nota">Conta, pontos e comentários ficam salvos só neste navegador.</p>
             </div>
         </footer>
     </div>
 
-    <!-- MODAL: SUGERIR UM JOGO -->
+    <button type="button" class="btn-topo" id="btnTopo" aria-label="Voltar ao topo" hidden>↑</button>
+
     <div class="modal-overlay escondido" id="modalSugerir" onclick="fecharModalSeClicarFora(event)">
         <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="tituloModalSugerir">
             <h2 id="tituloModalSugerir"><svg class="icone icone-inline" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-plus-circle"></use></svg> Sugerir um Jogo</h2>
             <p>Fez um jogo e quer ver ele aqui no portal? Manda o link, o nome do jogo e o seu nome de criador que a gente adiciona!</p>
-            <a class="btn-principal" href="mailto:oliveira.silva.lohan@escola.pr.gov.br?subject=Sugest%C3%A3o%20de%20jogo%20para%20o%20Portal&body=Nome%20do%20jogo%3A%0ALink%20do%20jogo%3A%0AMeu%20nome%20(criador)%3A%0ADescri%C3%A7%C3%A3o%20curta%3A" target="_blank" rel="noopener noreferrer">Enviar por E-mail</a>
+            <a class="btn-principal" href="mailto:oliveira.silva.lohan@escola.pr.gov.br?subject=Sugest%C3%A3o%20de%20jogo%20para%20o%20Portal&amp;body=Nome%20do%20jogo%3A%0ALink%20do%20jogo%3A%0AMeu%20nome%20(criador)%3A%0ADescri%C3%A7%C3%A3o%20curta%3A" target="_blank" rel="noopener noreferrer">Enviar por E-mail</a>
             <br>
             <button type="button" class="btn-fechar-modal" onclick="fecharModalSugerir()">Fechar</button>
         </div>
