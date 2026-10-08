@@ -35,7 +35,6 @@ const storage = {
     }
 };
 
-// ========== UTILITÁRIOS ==========
 function sanitizarNome(nome) {
     return nome.replace(/[<>]/g, '').trim().slice(0, 15);
 }
@@ -73,8 +72,20 @@ function migrarDadosAntigos() {
 const TOTAL_JOGOS = document.querySelectorAll('[data-jogo-btn]').length;
 
 const telaSplash = document.getElementById('telaSplash');
+const telaEntrada = document.getElementById('telaEntrada');
 const telaLogin = document.getElementById('telaLogin');
 const sitePrincipal = document.getElementById('sitePrincipal');
+
+function abrirLogin(aba) {
+    if (telaEntrada) telaEntrada.classList.add('escondido');
+    telaLogin.classList.remove('escondido');
+    mostrarAba(aba || 'entrar');
+}
+
+function voltarEntrada() {
+    telaLogin.classList.add('escondido');
+    if (telaEntrada) telaEntrada.classList.remove('escondido');
+}
 
 function hashSenha(senha) {
     let hash = 5381;
@@ -230,6 +241,8 @@ function fazerLogin(evento) {
 });
 
 function entrarNoSite(nome) {
+    if (telaEntrada) telaEntrada.classList.add('escondido');
+    telaLogin.classList.add('escondido');
     telaLogin.style.display = 'none';
     sitePrincipal.style.display = 'block';
     document.getElementById('nomeExibido').textContent = nome;
@@ -646,7 +659,7 @@ function renderizarTags() {
         tags.forEach(tag => {
             const botao = document.createElement('button');
             botao.type = 'button';
-            botao.className = 'tag';
+            botao.className = 'tag ' + classeDaTag(tag);
             botao.textContent = tag;
             botao.addEventListener('click', () => {
                 const busca = document.getElementById('buscaJogo');
@@ -660,6 +673,18 @@ function renderizarTags() {
         const ancora = card.querySelector('p');
         if (ancora) ancora.insertAdjacentElement('afterend', wrap);
     });
+}
+
+function classeDaTag(tag) {
+    const t = tag.toLowerCase();
+    if (t === 'novo' || t.includes('desenvolvimento')) return 'tag-novo';
+    if (t.includes('estratégia') || t.includes('estrategia') || t.includes('tabuleiro')) return 'tag-roxo';
+    if (t.includes('plataforma') || t.includes('pulo')) return 'tag-verde';
+    if (t.includes('sobreviv')) return 'tag-lima';
+    if (t.includes('tiro') || t.includes('espaço') || t.includes('espaco')) return 'tag-azul';
+    if (t.includes('palavra')) return 'tag-ciano';
+    if (t.includes('matemática') || t.includes('matematica') || t.includes('cálculo') || t.includes('calculo')) return 'tag-rosa';
+    return 'tag-roxo';
 }
 
 let destaqueIndex = 0;
