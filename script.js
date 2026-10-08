@@ -1,9 +1,4 @@
 // ========== ARMAZENAMENTO SEGURO ==========
-// Em alguns contextos (arquivo aberto direto como file://, modo anônimo,
-// certas configurações de navegador) o localStorage pode lançar um erro
-// e travar o site sem nenhum aviso. Esse wrapper tenta usar o localStorage
-// normalmente, mas se falhar, usa memória temporária, então o site sempre
-// funciona (só não salva entre sessões nesse caso de fallback).
 const memoriaTemporaria = {};
 let avisoStorageMostrado = false;
 
@@ -41,12 +36,6 @@ const storage = {
 };
 
 // ========== UTILITÁRIOS ==========
-function escaparHTML(texto) {
-    const div = document.createElement('div');
-    div.textContent = texto;
-    return div.innerHTML;
-}
-
 function sanitizarNome(nome) {
     return nome.replace(/[<>]/g, '').trim().slice(0, 15);
 }
@@ -87,13 +76,6 @@ const telaSplash = document.getElementById('telaSplash');
 const telaLogin = document.getElementById('telaLogin');
 const sitePrincipal = document.getElementById('sitePrincipal');
 
-// ========== CONTAS (usuário + senha) ==========
-// Importante: este site é 100% estático (GitHub Pages, sem servidor/banco
-// de dados). Por isso a conta e a senha ficam salvas só neste navegador,
-// no localStorage — não é uma conta "na nuvem" acessível de outro
-// computador. A senha passa por um hash simples abaixo só para não ficar
-// gravada em texto puro; isso NÃO é criptografia de verdade, então nunca
-// reaproveite aqui uma senha usada em outro lugar importante.
 function hashSenha(senha) {
     let hash = 5381;
     for (let i = 0; i < senha.length; i++) {
@@ -220,7 +202,7 @@ function fazerLogin(evento) {
     const conta = contas[usuario.toLowerCase()];
 
     if (!conta) {
-        mostrarErro('erroLogin', 'Usuário não encontrado. Que tal criar uma conta? ➕');
+        mostrarErro('erroLogin', 'Usuário não encontrado. Que tal criar uma conta?');
         return false;
     }
     if (conta.senhaHash !== hashSenha(senha)) {
@@ -257,19 +239,22 @@ function entrarNoSite(nome) {
     carregarPontuacao();
     carregarJogosJogados();
     renderizarAvaliacoes();
+    renderizarTags();
+    atualizarEstatisticas();
     iniciarDestaqueBanner();
     renderizarTodosComentarios();
+    aplicarFiltros();
 }
 
 function fazerLogout() {
-    if (confirm('sair?')) {
+    if (confirm('Sair da sua conta neste navegador? Seu progresso continua salvo aqui.')) {
         storage.removeItem('nomeUsuario');
         location.reload();
     }
 }
 
 function resetarProgresso() {
-    if (confirm('resetar?')) {
+    if (confirm('Zerar pontos, jogos jogados e avaliações? Sua conta continua.')) {
         storage.removeItem(chaveUsuario('pontuacao'));
         storage.removeItem(chaveUsuario('jogosJogados'));
         storage.removeItem(chaveUsuario('avaliacoes'));
@@ -277,7 +262,6 @@ function resetarProgresso() {
     }
 }
 
-// ========== TELA DE SPLASH ==========
 window.onload = function() {
     const prefereReduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const duracaoSplash = prefereReduzido ? 300 : 1600;
@@ -326,20 +310,30 @@ function carregarJogosJogados() {
 function marcarComoJogado(card) {
     const selo = card.querySelector('.selo-jogado');
     if (selo) selo.hidden = false;
+    card.classList.add('ja-jogado');
 }
 
 function atualizarProgresso() {
     const total = TOTAL_JOGOS;
     const jogados = jogosJogados.length;
-    document.getElementById('progressoLabel').textContent = `${jogados} de ${total} jogos jogados`;
-    document.getElementById('progressoFill').style.width = `${(jogados / total) * 100}%`;
+    const label = document.getElementById('progressoLabel');
+    const texto = jogados >= total && total > 0
+        ? `Todos os ${total} jogos jogados`
+        : `${jogados} de ${total} jogos jogados`;
+    label.textContent = texto;
+    document.getElementById('progressoFill').style.width = `${total ? (jogados / total) * 100 : 0}%`;
+}
+
+function atualizarEstatisticas() {
+    const stat = document.getElementById('statJogos');
+    if (stat) stat.textContent = String(TOTAL_JOGOS);
 }
 
 function mostrarMensagem(texto) {
     const msg = document.getElementById('mensagemPontos');
     msg.textContent = texto;
     msg.classList.add('mostrar');
-    setTimeout(() => msg.classList.remove('mostrar'), 1400);
+    setTimeout(() => msg.classList.remove('mostrar'), 1600);
 }
 
 function adicionarPontos(id, card) {
@@ -355,7 +349,8 @@ function adicionarPontos(id, card) {
     storage.setItem(chaveUsuario('pontuacao'), pontuacao);
 
     animarNumero(pontosAntigos, pontuacao);
-    mostrarMensagem('+15 pontos! 🎉');
+    const completou = jogosJogados.length === TOTAL_JOGOS;
+    mostrarMensagem(completou ? 'Você jogou todos os jogos! +15 pontos' : '+15 pontos!');
 
     if (document.getElementById('rankingBox').classList.contains('mostrar')) {
         atualizarRanking();
@@ -386,19 +381,37 @@ function animarNumero(inicio, fim) {
 
 function atualizarRanking() {
     const nomeAtual = storage.getItem('nomeUsuario') || 'Você';
+    const contas = carregarContas();
+
+    const locais = Object.values(contas).map(conta => ({
+        nome: conta.usuario,
+        pontos: parseInt(storage.getItem(`portal_${slugNome(conta.usuario)}_pontuacao`)) || 0,
+        real: true
+    }));
 
     const fakes = [
-        { nome: "SpaceMaster", pontos: 320 },
-        { nome: "NinjaVeloz", pontos: 245 },
-        { nome: "GamerPro", pontos: 180 },
-        { nome: "NovaEstrela", pontos: 95 },
-        { nome: "ProGamer22", pontos: 70 }
+        { nome: 'SpaceMaster', pontos: 320, real: false },
+        { nome: 'NinjaVeloz', pontos: 245, real: false },
+        { nome: 'GamerPro', pontos: 180, real: false },
+        { nome: 'NovaEstrela', pontos: 95, real: false },
+        { nome: 'ProGamer22', pontos: 70, real: false }
     ];
 
-    const jogadores = fakes.filter(j => j.nome.toLowerCase() !== nomeAtual.toLowerCase());
-    jogadores.push({ nome: nomeAtual, pontos: pontuacao });
+    const nomesReais = new Set(locais.map(j => j.nome.toLowerCase()));
+    const jogadores = locais.slice();
+    fakes.forEach(fake => {
+        if (!nomesReais.has(fake.nome.toLowerCase())) jogadores.push(fake);
+    });
 
-    jogadores.sort((a, b) => b.pontos - a.pontos);
+    if (!jogadores.some(j => j.nome.toLowerCase() === nomeAtual.toLowerCase())) {
+        jogadores.push({ nome: nomeAtual, pontos: pontuacao, real: true });
+    } else {
+        jogadores.forEach(j => {
+            if (j.nome.toLowerCase() === nomeAtual.toLowerCase()) j.pontos = pontuacao;
+        });
+    }
+
+    jogadores.sort((a, b) => b.pontos - a.pontos || a.nome.localeCompare(b.nome, 'pt-BR'));
 
     const lista = document.getElementById('listaRanking');
     lista.innerHTML = '';
@@ -407,7 +420,7 @@ function atualizarRanking() {
 
     jogadores.forEach((jogador, index) => {
         const li = document.createElement('li');
-        if (jogador.nome === nomeAtual) li.classList.add('voce');
+        if (jogador.nome.toLowerCase() === nomeAtual.toLowerCase()) li.classList.add('voce');
 
         const spanPos = document.createElement('span');
         spanPos.className = 'ranking-pos';
@@ -415,6 +428,7 @@ function atualizarRanking() {
         if (index < 3) {
             spanPos.classList.add(classesMedalha[index]);
             spanPos.innerHTML = '<svg class="icone icone-medalha" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-medal"></use></svg>';
+            spanPos.setAttribute('aria-label', `${index + 1}º lugar`);
         } else {
             spanPos.textContent = `${index + 1}º`;
         }
@@ -422,6 +436,12 @@ function atualizarRanking() {
         const spanNome = document.createElement('span');
         spanNome.className = 'ranking-nome';
         spanNome.textContent = jogador.nome;
+        if (!jogador.real) {
+            const tag = document.createElement('span');
+            tag.className = 'ranking-visitante';
+            tag.textContent = 'exemplo';
+            spanNome.appendChild(tag);
+        }
 
         const spanPontos = document.createElement('span');
         spanPontos.textContent = `${jogador.pontos} pts`;
@@ -436,6 +456,7 @@ function mostrarRanking() {
     box.classList.toggle('mostrar');
     if (box.classList.contains('mostrar')) {
         atualizarRanking();
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 }
 
@@ -461,7 +482,11 @@ function renderizarAvaliacoes() {
 
         const mediaEl = card.querySelector('.estrelas-media');
         if (mediaEl) {
-            mediaEl.innerHTML = `${estrelasTexto(nota)} <span class="nota-num">${nota.toFixed(1)}</span> <span class="contagem">(${contagem})</span>`;
+            if (!nota) {
+                mediaEl.innerHTML = '☆☆☆☆☆ <span class="nota-num">Novo</span> <span class="contagem">(0)</span>';
+            } else {
+                mediaEl.innerHTML = `${estrelasTexto(nota)} <span class="nota-num">${nota.toFixed(1)}</span> <span class="contagem">(${contagem})</span>`;
+            }
         }
 
         const jogoId = card.dataset.jogo;
@@ -498,7 +523,7 @@ function avaliarJogo(jogoId, valor, card) {
         pontuacao += 5;
         storage.setItem(chaveUsuario('pontuacao'), pontuacao);
         animarNumero(pontosAntigos, pontuacao);
-        mostrarMensagem('+5 pontos por avaliar! ⭐');
+        mostrarMensagem('+5 pontos por avaliar!');
 
         if (document.getElementById('rankingBox').classList.contains('mostrar')) {
             atualizarRanking();
@@ -516,24 +541,59 @@ function filtrarJogos(termo) {
 
 function filtrarPorCategoria(categoria) {
     filtroCategoriaAtual = categoria;
+    sincronizarPills(categoria);
+    aplicarFiltros();
+}
+
+function selecionarCategoria(categoria) {
+    filtroCategoriaAtual = categoria;
+    const select = document.getElementById('filtroCategoria');
+    if (select) select.value = categoria;
+    sincronizarPills(categoria);
+    aplicarFiltros();
+}
+
+function sincronizarPills(categoria) {
+    document.querySelectorAll('#pillsCategoria .pill').forEach(pill => {
+        const ativa = pill.dataset.cat === categoria;
+        pill.classList.toggle('ativa', ativa);
+        pill.setAttribute('aria-selected', String(ativa));
+    });
+}
+
+function limparFiltros() {
+    filtroTextoAtual = '';
+    filtroCategoriaAtual = 'todas';
+    const busca = document.getElementById('buscaJogo');
+    const select = document.getElementById('filtroCategoria');
+    const ordem = document.getElementById('ordenarPor');
+    if (busca) busca.value = '';
+    if (select) select.value = 'todas';
+    if (ordem) {
+        ordem.value = 'padrao';
+        ordenarJogos('padrao');
+    }
+    sincronizarPills('todas');
     aplicarFiltros();
 }
 
 function aplicarFiltros() {
     const cards = document.querySelectorAll('#gamesGrid .game-card');
-    let algumVisivel = false;
+    let visiveis = 0;
 
     cards.forEach(card => {
         const titulo = card.querySelector('h3').textContent.toLowerCase();
         const descricao = card.querySelector('p').textContent.toLowerCase();
         const criadorEl = card.querySelector('.game-criador');
         const criador = criadorEl ? criadorEl.textContent.toLowerCase() : '';
+        const tags = (card.dataset.tags || '').toLowerCase();
         const categoriaCard = (card.dataset.categoria || '').trim().toLowerCase();
 
         const correspondeTexto = !filtroTextoAtual
             || titulo.includes(filtroTextoAtual)
             || descricao.includes(filtroTextoAtual)
-            || criador.includes(filtroTextoAtual);
+            || criador.includes(filtroTextoAtual)
+            || tags.includes(filtroTextoAtual);
 
         const categoriaFiltro = (filtroCategoriaAtual || 'todas').trim().toLowerCase();
         const correspondeCategoria = categoriaFiltro === 'todas'
@@ -541,10 +601,19 @@ function aplicarFiltros() {
 
         const corresponde = correspondeTexto && correspondeCategoria;
         card.classList.toggle('escondido', !corresponde);
-        if (corresponde) algumVisivel = true;
+        if (corresponde) visiveis += 1;
     });
 
-    document.getElementById('semResultados').classList.toggle('mostrar', !algumVisivel);
+    const semResultado = visiveis === 0;
+    document.getElementById('semResultados').classList.toggle('mostrar', semResultado);
+    const limpar = document.getElementById('limparFiltrosWrap');
+    if (limpar) limpar.classList.toggle('escondido', !semResultado);
+
+    const contagem = document.getElementById('resultadoContagem');
+    if (contagem) {
+        const filtrando = Boolean(filtroTextoAtual) || filtroCategoriaAtual !== 'todas';
+        contagem.textContent = filtrando ? `${visiveis} de ${cards.length} jogos` : '';
+    }
 }
 
 function ordenarJogos(criterio) {
@@ -565,6 +634,33 @@ function ordenarJogos(criterio) {
 document.querySelectorAll('#gamesGrid .game-card').forEach((card, index) => {
     card.dataset.ordemOriginal = index;
 });
+
+function renderizarTags() {
+    document.querySelectorAll('.game-card').forEach(card => {
+        const tags = (card.dataset.tags || '').split(',').map(t => t.trim()).filter(Boolean);
+        if (tags.some(t => t.toLowerCase() === 'novo')) card.classList.add('eh-novo');
+        if (card.querySelector('.game-tags') || !tags.length) return;
+
+        const wrap = document.createElement('div');
+        wrap.className = 'game-tags';
+        tags.forEach(tag => {
+            const botao = document.createElement('button');
+            botao.type = 'button';
+            botao.className = 'tag';
+            botao.textContent = tag;
+            botao.addEventListener('click', () => {
+                const busca = document.getElementById('buscaJogo');
+                if (busca) busca.value = tag;
+                filtrarJogos(tag);
+                document.getElementById('jogos').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            wrap.appendChild(botao);
+        });
+
+        const ancora = card.querySelector('p');
+        if (ancora) ancora.insertAdjacentElement('afterend', wrap);
+    });
+}
 
 let destaqueIndex = 0;
 let destaqueIntervalo = null;
@@ -590,7 +686,7 @@ function renderizarDestaqueSlide(index) {
 
     const eyebrow = document.createElement('div');
     eyebrow.className = 'destaque-eyebrow';
-    eyebrow.textContent = '★ Em destaque';
+    eyebrow.textContent = 'Em destaque';
 
     const tituloEl = document.createElement('div');
     tituloEl.className = 'destaque-titulo';
@@ -605,7 +701,9 @@ function renderizarDestaqueSlide(index) {
 
     const estrelasEl = document.createElement('div');
     estrelasEl.className = 'estrelas-media';
-    estrelasEl.innerHTML = `${estrelasTexto(nota)} <span class="nota-num">${nota.toFixed(1)}</span> <span class="contagem">(${contagem})</span>`;
+    estrelasEl.innerHTML = nota
+        ? `${estrelasTexto(nota)} <span class="nota-num">${nota.toFixed(1)}</span> <span class="contagem">(${contagem})</span>`
+        : '☆☆☆☆☆ <span class="nota-num">Novo</span>';
 
     const botao = document.createElement('a');
     botao.href = link;
@@ -627,6 +725,7 @@ function renderizarDestaqueSlide(index) {
 
     document.querySelectorAll('.dot').forEach((dot, i) => {
         dot.classList.toggle('ativo', i === index);
+        dot.setAttribute('aria-current', i === index ? 'true' : 'false');
     });
 }
 
@@ -637,12 +736,14 @@ function irParaSlide(index) {
 
 function iniciarDestaqueBanner() {
     if (cardsDestaque.length === 0) return;
+    if (document.getElementById('destaqueDots').childElementCount) return;
 
     const dotsWrap = document.getElementById('destaqueDots');
     dotsWrap.innerHTML = '';
     cardsDestaque.forEach((_, i) => {
         const dot = document.createElement('button');
         dot.className = 'dot';
+        dot.type = 'button';
         dot.setAttribute('aria-label', `Ver destaque ${i + 1}`);
         dot.addEventListener('click', () => {
             irParaSlide(i);
@@ -666,13 +767,19 @@ function reiniciarAutoRotate() {
     }, 6000);
 }
 
-// ========== MODAL: SUGERIR UM JOGO ==========
+let elementoAntesDoModal = null;
+
 function abrirModalSugerir() {
-    document.getElementById('modalSugerir').classList.remove('escondido');
+    elementoAntesDoModal = document.activeElement;
+    const modal = document.getElementById('modalSugerir');
+    modal.classList.remove('escondido');
+    const foco = modal.querySelector('a, button');
+    if (foco) foco.focus();
 }
 
 function fecharModalSugerir() {
     document.getElementById('modalSugerir').classList.add('escondido');
+    if (elementoAntesDoModal && elementoAntesDoModal.focus) elementoAntesDoModal.focus();
 }
 
 function fecharModalSeClicarFora(evento) {
@@ -681,14 +788,20 @@ function fecharModalSeClicarFora(evento) {
 
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') fecharModalSugerir();
+    if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const alvo = e.target;
+        const editando = alvo && (alvo.tagName === 'INPUT' || alvo.tagName === 'TEXTAREA' || alvo.isContentEditable);
+        if (!editando && sitePrincipal.style.display === 'block') {
+            e.preventDefault();
+            const busca = document.getElementById('buscaJogo');
+            if (busca) {
+                busca.focus();
+                document.getElementById('jogos').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    }
 });
 
-// ========== COMENTÁRIOS ==========
-// Comentários ficam salvos de forma GLOBAL (não por usuário), pra todo
-// mundo que abre o site neste navegador ver os mesmos comentários de um
-// jogo. Como o site é 100% estático, isso ainda é "local" a cada
-// navegador/dispositivo — não é um comentário compartilhado com outras
-// pessoas em outros computadores, só entre quem usa esse mesmo navegador.
 const CHAVE_COMENTARIOS = 'portal_comentarios';
 const LIMITE_COMENTARIO = 300;
 
@@ -724,8 +837,6 @@ function contarComentarios(jogoId) {
 }
 
 function atualizarContagemComentarios(jogoId) {
-    const btn = document.querySelector(`[data-jogo-comentarios="${jogoId}"] .comentarios-contagem`)
-        || document.querySelector(`[data-jogo-comentarios="${jogoId}"]`)?.querySelector('.comentarios-contagem');
     const contagem = contarComentarios(jogoId);
     document.querySelectorAll(`[data-jogo-comentarios="${jogoId}"] .comentarios-contagem`).forEach(el => {
         el.textContent = contagem > 0 ? `(${contagem})` : '';
@@ -797,6 +908,13 @@ function renderizarComentarios(jogoId) {
     const erro = document.createElement('div');
     erro.className = 'comentario-erro';
 
+    const contador = document.createElement('div');
+    contador.className = 'comentario-contador';
+    contador.textContent = `0/${LIMITE_COMENTARIO}`;
+    textarea.addEventListener('input', () => {
+        contador.textContent = `${textarea.value.length}/${LIMITE_COMENTARIO}`;
+    });
+
     function tentarEnviar() {
         const texto = textarea.value.trim();
         erro.textContent = '';
@@ -816,6 +934,7 @@ function renderizarComentarios(jogoId) {
 
         adicionarComentario(jogoId, nomeAtual, texto);
         textarea.value = '';
+        contador.textContent = `0/${LIMITE_COMENTARIO}`;
     }
 
     enviar.addEventListener('click', tentarEnviar);
@@ -827,8 +946,7 @@ function renderizarComentarios(jogoId) {
     });
 
     form.append(textarea, enviar);
-
-    box.append(ul, form, erro);
+    box.append(ul, form, contador, erro);
 }
 
 function adicionarComentario(jogoId, autor, texto) {
@@ -847,7 +965,7 @@ function adicionarComentario(jogoId, autor, texto) {
     salvarTodosComentarios(todos);
     renderizarComentarios(jogoId);
     atualizarContagemComentarios(jogoId);
-    mostrarMensagem('Comentário enviado! 💬');
+    mostrarMensagem('Comentário enviado!');
 
     if (primeiraVez) {
         const pontosAntigos = pontuacao;
@@ -896,3 +1014,20 @@ function renderizarTodosComentarios() {
 document.querySelectorAll('[data-jogo-comentarios]').forEach(btn => {
     btn.addEventListener('click', () => alternarComentarios(btn.dataset.jogoComentarios));
 });
+
+document.querySelectorAll('#pillsCategoria .pill').forEach(pill => {
+    pill.addEventListener('click', () => selecionarCategoria(pill.dataset.cat));
+});
+
+const btnTopo = document.getElementById('btnTopo');
+if (btnTopo) {
+    window.addEventListener('scroll', () => {
+        btnTopo.hidden = window.scrollY < 500;
+    }, { passive: true });
+    btnTopo.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+renderizarTags();
+atualizarEstatisticas();
